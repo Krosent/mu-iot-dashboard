@@ -118,9 +118,13 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"app.js":[function(require,module,exports) {
-const solidNodeClient = require("solid-node-client");
+const solidNodeClient = require('solid-node-client');
 
-const express = require("express");
+const SolidFileClient = require('solid-file-client');
+
+const express = require('express'); // const axios = require('axios');
+// import { getFile, isRawData, getContentType, getSourceUrl, } from "@inrupt/solid-client";
+
 
 const html = `<!DOCTYPE html>
 <html lang="en">
@@ -133,9 +137,10 @@ const html = `<!DOCTYPE html>
 </body>
 </html>`;
 const app = express();
+const client = new solidNodeClient.SolidNodeClient();
+const fileClient = new SolidFileClient(client);
 app.get('/', async (_, res) => {
   res.set('Content-Type', 'text/html');
-  const client = new solidNodeClient.SolidNodeClient();
   await client.login({
     idp: 'https://solidcommunity.net',
     // e.g. https://solidcommunity.net
@@ -159,7 +164,6 @@ app.get('/', async (_, res) => {
 app.get('/authorize/:username/:password', async (req, res) => {
   console.log(`username: ${req.params.username}`);
   console.log(`password: ${req.params.password}`);
-  const client = new solidNodeClient.SolidNodeClient();
   await client.login({
     idp: 'https://solidcommunity.net',
     // e.g. https://solidcommunity.net
@@ -175,6 +179,18 @@ app.get('/authorize/:username/:password', async (req, res) => {
       res.status(405).send('Unauthorized');
     }
   }).catch(error => res.status(405).send('Unauthorized'));
+});
+app.get('/automations/fetch', async (_, res) => {
+  // https://iot-solid-bot.solidcommunity.net/automations/automations.yaml
+  const fileLink = 'https://iot-solid-bot.solidcommunity.net/automations/automations.yaml';
+
+  try {
+    const file = await fileClient.readFile(fileLink);
+    res.write(file, 'binary');
+    res.end();
+  } catch (err) {
+    console.log(`error is: ${err}`);
+  }
 });
 module.exports = app;
 },{}],"index.js":[function(require,module,exports) {
