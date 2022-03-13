@@ -139,6 +139,9 @@ const html = `<!DOCTYPE html>
 const app = express();
 const client = new solidNodeClient.SolidNodeClient();
 const fileClient = new SolidFileClient(client);
+
+const fs = require('fs');
+
 app.get('/', async (_, res) => {
   res.set('Content-Type', 'text/html');
   await client.login({
@@ -174,6 +177,39 @@ app.get('/authorize/:username/:password', async (req, res) => {
     console.log(session);
 
     if (session.isLoggedIn) {
+      // TODO: Add automations file into the server
+      // TODO: Add only if does not exist before
+      // /home/krosent/Projects/hass/core/config/automations.yaml
+      const fileLink = 'https://iot-solid-bot.solidcommunity.net/automations/automations.yaml';
+
+      try {
+        const file = fileClient.readFile(fileLink).then(fl => {
+          fs.writeFile(`/home/krosent/Projects/hass/core/config/${req.params.username}.yaml`, fl, {
+            flag: 'a+'
+          }, err => {
+            if (err) {
+              console.error(err);
+              return;
+            } // file written successfully
+
+
+            console.log(`automations.file for user ${req.params.username} was created`);
+            console.log(`automations.file for user ${req.params.username} was created`);
+            const includeNewAutomationsFile = `automation ${req.params.username}: !include ${req.params.username}.yaml`;
+            fs.writeFile('/home/krosent/Projects/hass/core/config/configuration.yaml', includeNewAutomationsFile, {
+              flag: 'a+'
+            }, err => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+            });
+          });
+        });
+      } catch (err) {
+        console.log(`error is: ${err}`);
+      }
+
       res.status(200).send('Authorized');
     } else {
       res.status(405).send('Unauthorized');
