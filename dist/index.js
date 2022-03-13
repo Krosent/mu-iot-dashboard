@@ -118,6 +118,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"app.js":[function(require,module,exports) {
+/* eslint-disable no-console */
 const solidNodeClient = require('solid-node-client');
 
 const SolidFileClient = require('solid-file-client');
@@ -137,12 +138,11 @@ const html = `<!DOCTYPE html>
 </body>
 </html>`;
 const app = express();
-const client = new solidNodeClient.SolidNodeClient();
-const fileClient = new SolidFileClient(client);
 
 const fs = require('fs');
 
 app.get('/', async (_, res) => {
+  const client = new solidNodeClient.SolidNodeClient();
   res.set('Content-Type', 'text/html');
   await client.login({
     idp: 'https://solidcommunity.net',
@@ -155,16 +155,18 @@ app.get('/', async (_, res) => {
     password: 'kDLpdi!LK2AV84k',
   */
 
-  /* idp: 'https://broker.pod.inrupt.com', // e.g. https://solidcommunity.net
-    username: 'krosent',
-    password: 'ggUAL#H8dxcYw6q',
+  /*
+    Another SOLID account:
+    krosent
+    VtHf5NGuQffE2n7P
   */
-  // console.log(`client: ${JSON.stringify(client)}`);
 
   client.getSession().then(session => console.log(`Session: ${JSON.stringify(session.info.webId)}`)).catch(error => console.log(`We have error: ${error}`));
   res.status(200).send(html);
 });
 app.get('/authorize/:username/:password', async (req, res) => {
+  const client = new solidNodeClient.SolidNodeClient();
+  const fileClient = new SolidFileClient(client);
   console.log(`username: ${req.params.username}`);
   console.log(`password: ${req.params.password}`);
   await client.login({
@@ -177,34 +179,34 @@ app.get('/authorize/:username/:password', async (req, res) => {
     console.log(session);
 
     if (session.isLoggedIn) {
-      // TODO: Add automations file into the server
-      // TODO: Add only if does not exist before
-      // /home/krosent/Projects/hass/core/config/automations.yaml
-      const fileLink = 'https://iot-solid-bot.solidcommunity.net/automations/automations.yaml';
+      const fileLink = `https://${req.params.username}.solidcommunity.net/automations/automations.yaml`;
 
       try {
-        const file = fileClient.readFile(fileLink).then(fl => {
-          fs.writeFile(`/home/krosent/Projects/hass/core/config/${req.params.username}.yaml`, fl, {
-            flag: 'a+'
-          }, err => {
-            if (err) {
-              console.error(err);
-              return;
-            } // file written successfully
-
-
-            console.log(`automations.file for user ${req.params.username} was created`);
-            console.log(`automations.file for user ${req.params.username} was created`);
-            const includeNewAutomationsFile = `automation ${req.params.username}: !include ${req.params.username}.yaml`;
-            fs.writeFile('/home/krosent/Projects/hass/core/config/configuration.yaml', includeNewAutomationsFile, {
+        fileClient.readFile(fileLink).then(fl => {
+          if (!fs.existsSync(`/home/krosent/Projects/hass/core/config/${req.params.username}.yaml`)) {
+            fs.writeFile(`/home/krosent/Projects/hass/core/config/${req.params.username}.yaml`, fl, {
               flag: 'a+'
-            }, err => {
-              if (err) {
-                console.error(err);
+            }, automationFileError => {
+              if (automationFileError) {
+                console.error(automationFileError);
                 return;
-              }
+              } // file written successfully
+
+
+              console.log(`automations.file for user ${req.params.username} was created`);
+              const includeNewAutomationsFile = `automation ${req.params.username}: !include ${req.params.username}.yaml\r\n`;
+              fs.writeFile('/home/krosent/Projects/hass/core/config/configuration.yaml', includeNewAutomationsFile, {
+                flag: 'a+'
+              }, configFileError => {
+                if (configFileError) {
+                  console.error(configFileError);
+                  return;
+                }
+
+                console.log(`automations.file for user ${req.params.username} was added to configuration.yaml`);
+              });
             });
-          });
+          }
         });
       } catch (err) {
         console.log(`error is: ${err}`);
@@ -218,6 +220,8 @@ app.get('/authorize/:username/:password', async (req, res) => {
 });
 app.get('/automations/fetch', async (_, res) => {
   // https://iot-solid-bot.solidcommunity.net/automations/automations.yaml
+  const client = new solidNodeClient.SolidNodeClient();
+  const fileClient = new SolidFileClient(client);
   const fileLink = 'https://iot-solid-bot.solidcommunity.net/automations/automations.yaml';
 
   try {
