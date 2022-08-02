@@ -117,54 +117,44 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"app.js":[function(require,module,exports) {
-/* eslint-disable no-console */
+})({"routes/entry.js":[function(require,module,exports) {
+const express = require('express');
+
+const router = express.Router();
+router.get('/', (req, res) => {
+  res.render('pages/entry');
+});
+module.exports = router;
+},{}],"routes/dashboard.js":[function(require,module,exports) {
+const express = require('express');
+
+const router = express.Router();
+router.get('/', (req, res) => {
+  res.render('pages/dashboard');
+});
+module.exports = router;
+},{}],"routes/solid-hass.js":[function(require,module,exports) {
+const express = require('express');
+
+const fs = require('fs');
+
 const solidNodeClient = require('solid-node-client');
 
 const SolidFileClient = require('solid-file-client');
 
-const express = require('express'); // const axios = require('axios');
-// import { getFile, isRawData, getContentType, getSourceUrl, } from "@inrupt/solid-client";
+const router = express.Router();
+/* idp: 'https://broker.pod.inrupt.com', // e.g. https://solidcommunity.net
+  username: 'iot-solid-bot',
+  password: 'kDLpdi!LK2AV84k',
+*/
 
+/*
+  Another SOLID account:
+  krosent
+  VtHf5NGuQffE2n7P
+*/
 
-const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>A JavaScript project</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
-  <h1>A JavaScript project</h1>
-</body>
-</html>`;
-const app = express();
-
-const fs = require('fs');
-
-app.get('/', async (_, res) => {
-  const client = new solidNodeClient.SolidNodeClient();
-  res.set('Content-Type', 'text/html');
-  await client.login({
-    idp: 'https://solidcommunity.net',
-    // e.g. https://solidcommunity.net
-    username: 'iot-solid-bot',
-    password: 'kDLpdi!LK2AV84k'
-  });
-  /* idp: 'https://broker.pod.inrupt.com', // e.g. https://solidcommunity.net
-    username: 'iot-solid-bot',
-    password: 'kDLpdi!LK2AV84k',
-  */
-
-  /*
-    Another SOLID account:
-    krosent
-    VtHf5NGuQffE2n7P
-  */
-
-  client.getSession().then(session => console.log(`Session: ${JSON.stringify(session.info.webId)}`)).catch(error => console.log(`We have error: ${error}`));
-  res.status(200).send(html);
-});
-app.get('/authorize/:username/:password', async (req, res) => {
+router.get('/authorize/:username/:password', async (req, res) => {
   const client = new solidNodeClient.SolidNodeClient();
   const fileClient = new SolidFileClient(client);
   console.log(`username: ${req.params.username}`);
@@ -216,9 +206,9 @@ app.get('/authorize/:username/:password', async (req, res) => {
     } else {
       res.status(405).send('Unauthorized');
     }
-  }).catch(error => res.status(405).send('Unauthorized'));
+  }).catch(error => res.status(405).send(`Unauthorized, error: ${error}`));
 });
-app.get('/automations/fetch', async (_, res) => {
+router.get('/automations/fetch', async (_, res) => {
   // https://iot-solid-bot.solidcommunity.net/automations/automations.yaml
   const client = new solidNodeClient.SolidNodeClient();
   const fileClient = new SolidFileClient(client);
@@ -232,8 +222,36 @@ app.get('/automations/fetch', async (_, res) => {
     console.log(`error is: ${err}`);
   }
 });
+module.exports = router;
+},{}],"app.js":[function(require,module,exports) {
+/* eslint-disable no-console */
+const express = require('express');
+
+const app = express();
+
+const path = require('path');
+
+app.set('view engine', 'ejs'); // import dependencies for frontend
+
+app.use('/css', express.static(path.join('./', 'node_modules/bootstrap/dist/css')));
+app.use('/js', express.static(path.join('./', 'node_modules/bootstrap/dist/js')));
+app.use('/js', express.static(path.join('./', 'node_modules/jquery/dist')));
+app.use('/popper', express.static(path.join('./', 'node_modules/@popperjs/core/dist')));
+app.use('/vis-timeline', express.static(path.join('./', 'node_modules/vis-timeline'))); // entry point routes
+
+const entryPointRouter = require('./routes/entry');
+
+app.use('/', entryPointRouter); // dashboard routes
+
+const dashboardRouter = require('./routes/dashboard');
+
+app.use('/dashboard', dashboardRouter); // solid auth routes
+
+const solidRouter = require('./routes/solid-hass');
+
+app.use('/', solidRouter);
 module.exports = app;
-},{}],"index.js":[function(require,module,exports) {
+},{"./routes/entry":"routes/entry.js","./routes/dashboard":"routes/dashboard.js","./routes/solid-hass":"routes/solid-hass.js"}],"index.js":[function(require,module,exports) {
 const app = require('./app');
 
 const port = '8888';

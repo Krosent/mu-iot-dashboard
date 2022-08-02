@@ -1,119 +1,41 @@
 /* eslint-disable no-console */
-const solidNodeClient = require('solid-node-client');
-const SolidFileClient = require('solid-file-client');
 const express = require('express');
 
-// const axios = require('axios');
-
-// import { getFile, isRawData, getContentType, getSourceUrl, } from "@inrupt/solid-client";
-
-const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>A JavaScript project</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
-  <h1>A JavaScript project</h1>
-</body>
-</html>`;
-
 const app = express();
-const fs = require('fs');
+const path = require('path');
 
-app.get('/', async (_, res) => {
-  const client = new solidNodeClient.SolidNodeClient();
-  res.set('Content-Type', 'text/html');
-  await client.login({
-    idp: 'https://solidcommunity.net', // e.g. https://solidcommunity.net
-    username: 'iot-solid-bot',
-    password: 'kDLpdi!LK2AV84k',
-  });
+app.set('view engine', 'ejs');
 
-  /* idp: 'https://broker.pod.inrupt.com', // e.g. https://solidcommunity.net
-    username: 'iot-solid-bot',
-    password: 'kDLpdi!LK2AV84k',
-  */
+// import dependencies for frontend
+app.use(
+  '/css',
+  express.static(path.join('./', 'node_modules/bootstrap/dist/css')),
+);
 
-  /*
-    Another SOLID account:
-    krosent
-    VtHf5NGuQffE2n7P
-  */
+app.use(
+  '/js',
+  express.static(path.join('./', 'node_modules/bootstrap/dist/js')),
+);
 
-  client
-    .getSession()
-    .then((session) =>
-      console.log(`Session: ${JSON.stringify(session.info.webId)}`))
-    .catch((error) => console.log(`We have error: ${error}`));
+app.use('/js', express.static(path.join('./', 'node_modules/jquery/dist')));
 
-  res.status(200).send(html);
-});
+app.use('/popper', express.static(path.join('./', 'node_modules/@popperjs/core/dist')));
 
-app.get('/authorize/:username/:password', async (req, res) => {
-  const client = new solidNodeClient.SolidNodeClient();
-  const fileClient = new SolidFileClient(client);
-  console.log(`username: ${req.params.username}`);
-  console.log(`password: ${req.params.password}`);
+app.use('/vis-timeline', express.static(path.join('./', 'node_modules/vis-timeline')));
 
-  await client.login({
-    idp: 'https://solidcommunity.net', // e.g. https://solidcommunity.net
-    username: req.params.username,
-    password: req.params.password,
-  });
-  client
-    .getSession()
-    .then((session) => {
-      console.log(session);
-      if (session.isLoggedIn) {
-        const fileLink = `https://${req.params.username}.solidcommunity.net/automations/automations.yaml`;
-        try {
-          fileClient.readFile(fileLink).then((fl) => {
-            if (!fs.existsSync(`/home/krosent/Projects/hass/core/config/${req.params.username}.yaml`)) {
-              fs.writeFile(`/home/krosent/Projects/hass/core/config/${req.params.username}.yaml`, fl, { flag: 'a+' }, (automationFileError) => {
-                if (automationFileError) {
-                  console.error(automationFileError);
-                  return;
-                }
-                // file written successfully
-                console.log(`automations.file for user ${req.params.username} was created`);
-                const includeNewAutomationsFile = `automation ${req.params.username}: !include ${req.params.username}.yaml\r\n`;
-                fs.writeFile('/home/krosent/Projects/hass/core/config/configuration.yaml', includeNewAutomationsFile, { flag: 'a+' }, (configFileError) => {
-                  if (configFileError) {
-                    console.error(configFileError);
-                    return;
-                  }
-                  console.log(`automations.file for user ${req.params.username} was added to configuration.yaml`);
-                });
-              });
-            }
-          });
-        } catch (err) {
-          console.log(`error is: ${err}`);
-        }
+// entry point routes
+const entryPointRouter = require('./routes/entry');
 
-        res.status(200).send('Authorized');
-      } else {
-        res.status(405).send('Unauthorized');
-      }
-    })
-    .catch((error) => res.status(405).send('Unauthorized'));
-});
+app.use('/', entryPointRouter);
 
-app.get('/automations/fetch', async (_, res) => {
-  // https://iot-solid-bot.solidcommunity.net/automations/automations.yaml
-  const client = new solidNodeClient.SolidNodeClient();
-  const fileClient = new SolidFileClient(client);
+// dashboard routes
+const dashboardRouter = require('./routes/dashboard');
 
-  const fileLink = 'https://iot-solid-bot.solidcommunity.net/automations/automations.yaml';
-  try {
-    const file = await fileClient.readFile(fileLink);
+app.use('/dashboard', dashboardRouter);
 
-    res.write(file, 'binary');
-    res.end();
-  } catch (err) {
-    console.log(`error is: ${err}`);
-  }
-});
+// solid auth routes
+const solidRouter = require('./routes/solid-hass');
+
+app.use('/', solidRouter);
 
 module.exports = app;
