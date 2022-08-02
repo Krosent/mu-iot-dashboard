@@ -3,52 +3,53 @@ const solidNodeClient = require('solid-node-client');
 const SolidFileClient = require('solid-file-client');
 const express = require('express');
 
-// const axios = require('axios');
-
-// import { getFile, isRawData, getContentType, getSourceUrl, } from "@inrupt/solid-client";
-
-const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>A JavaScript project</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
-  <h1>A JavaScript project</h1>
-</body>
-</html>`;
-
 const app = express();
 const fs = require('fs');
+const path = require('path');
 
-app.get('/', async (_, res) => {
-  const client = new solidNodeClient.SolidNodeClient();
-  res.set('Content-Type', 'text/html');
-  await client.login({
-    idp: 'https://solidcommunity.net', // e.g. https://solidcommunity.net
-    username: 'iot-solid-bot',
-    password: 'kDLpdi!LK2AV84k',
-  });
+app.set('view engine', 'ejs');
 
-  /* idp: 'https://broker.pod.inrupt.com', // e.g. https://solidcommunity.net
-    username: 'iot-solid-bot',
-    password: 'kDLpdi!LK2AV84k',
-  */
+app.use(
+  '/css',
+  express.static(path.join('./', 'node_modules/bootstrap/dist/css')),
+);
 
-  /*
-    Another SOLID account:
-    krosent
-    VtHf5NGuQffE2n7P
-  */
+app.use(
+  '/js',
+  express.static(path.join('./', 'node_modules/bootstrap/dist/js')),
+);
 
-  client
-    .getSession()
-    .then((session) =>
-      console.log(`Session: ${JSON.stringify(session.info.webId)}`))
-    .catch((error) => console.log(`We have error: ${error}`));
+app.use('/js', express.static(path.join('./', 'node_modules/jquery/dist')));
 
-  res.status(200).send(html);
+app.use('/popper', express.static(path.join('./', 'node_modules/@popperjs/core/dist')));
+
+app.use('/vis-timeline', express.static(path.join('./', 'node_modules/vis-timeline')));
+
+app.get('/', (req, res) => {
+  res.render('pages/index');
 });
+
+let isCharging = false;
+
+app.get('/battery/api', async (req, res) => {
+  res.status(200).json({ charger_type: 'powerBank', icon: 'battery', is_charging: isCharging });
+});
+
+app.get('/battery/api/:charging', async (req, res) => {
+  isCharging = req.params.charging;
+  res.status(200).json({ charger_type: 'powerBank', icon: 'battery', is_charging: isCharging });
+});
+
+/* idp: 'https://broker.pod.inrupt.com', // e.g. https://solidcommunity.net
+  username: 'iot-solid-bot',
+  password: 'kDLpdi!LK2AV84k',
+*/
+
+/*
+  Another SOLID account:
+  krosent
+  VtHf5NGuQffE2n7P
+*/
 
 app.get('/authorize/:username/:password', async (req, res) => {
   const client = new solidNodeClient.SolidNodeClient();
@@ -57,6 +58,7 @@ app.get('/authorize/:username/:password', async (req, res) => {
   console.log(`password: ${req.params.password}`);
 
   await client.login({
+// const axios = require('axios');
     idp: 'https://solidcommunity.net', // e.g. https://solidcommunity.net
     username: req.params.username,
     password: req.params.password,
@@ -91,6 +93,11 @@ app.get('/authorize/:username/:password', async (req, res) => {
         } catch (err) {
           console.log(`error is: ${err}`);
         }
+
+        // TODO: Create person in configuration
+        // const readPersonFile = fs.readFileSync('/home/krosent/Projects/hass/core/config/.storage/person.yaml');
+        // const personJson = JSON.parse(readPersonFile);
+        // if (personJson.data.items.contains())
 
         res.status(200).send('Authorized');
       } else {

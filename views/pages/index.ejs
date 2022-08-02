@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="./css/bootstrap.min.css">
+<link href="./vis-timeline/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
+<script src="./vis-timeline/standalone/umd/vis-timeline-graph2d.min.js"></script>
+
+
+<body>
+
+    <div class="container">
+        <h1>Timeline Application</h1>
+        <h4>Artyom Kuznetsov</h4>
+    </div>
+
+    <div id="visualization" class="container"></div>
+    <script type="text/javascript">
+        // DOM element where the Timeline will be attached
+        var container = document.getElementById('visualization');
+
+        // Create a DataSet (allows two way data-binding)
+        var items = new vis.DataSet([
+            { id: 1, content: 'item 1', start: '2014-04-20T01:00:00', group: 0 },
+            { id: 2, content: 'item 2', start: '2014-04-20T01:01:00', group: 0 },
+            { id: 3, content: 'item 3', start: '2014-04-20T01:04:00', group: 1 },
+            { id: 4, content: 'item 4', start: '2014-04-20T01:09:00', end: '2014-04-20T01:12:00', group: 1 },
+            { id: 5, content: 'item 5', start: '2014-04-20T01:13:00', group: 2 },
+            { id: 6, content: 'item 6', start: '2014-04-20T01:15:00', type: 'point', group: 2 }
+        ]);
+
+        // Configuration for the Timeline
+        var options = {};
+
+        // Create a Timeline
+        var timeline = new vis.Timeline(container, items, options);
+    </script>
+
+    <script src="./popper/umd/popper.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+</body>
