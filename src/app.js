@@ -23,14 +23,19 @@ app.use('/popper', express.static(path.join('./', 'node_modules/@popperjs/core/d
 
 app.use('/vis-timeline', express.static(path.join('./', 'node_modules/vis-timeline')));
 
-// dashboard main page
-app.get('/', (req, res) => {
-  res.render('pages/index');
-});
+// entry point routes
+const entryPointRouter = require('./routes/entry');
+
+app.use('/', entryPointRouter);
+
+// dashboard routes
+const dashboardRouter = require('./routes/dashboard');
+
+app.use('/dashboard', dashboardRouter);
 
 // solid auth routes
-const solidHass = require('./routes/solid-hass');
-// …
-app.use('/', solidHass);
+const solidRouter = require('./routes/solid-hass');
+
+app.use('/', solidRouter);
 
 module.exports = app;

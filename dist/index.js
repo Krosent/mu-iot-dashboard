@@ -117,7 +117,23 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"routes/solid-hass.js":[function(require,module,exports) {
+})({"routes/entry.js":[function(require,module,exports) {
+const express = require('express');
+
+const router = express.Router();
+router.get('/', (req, res) => {
+  res.render('pages/entry');
+});
+module.exports = router;
+},{}],"routes/dashboard.js":[function(require,module,exports) {
+const express = require('express');
+
+const router = express.Router();
+router.get('/', (req, res) => {
+  res.render('pages/dashboard');
+});
+module.exports = router;
+},{}],"routes/solid-hass.js":[function(require,module,exports) {
 const express = require('express');
 
 const fs = require('fs');
@@ -221,18 +237,21 @@ app.use('/css', express.static(path.join('./', 'node_modules/bootstrap/dist/css'
 app.use('/js', express.static(path.join('./', 'node_modules/bootstrap/dist/js')));
 app.use('/js', express.static(path.join('./', 'node_modules/jquery/dist')));
 app.use('/popper', express.static(path.join('./', 'node_modules/@popperjs/core/dist')));
-app.use('/vis-timeline', express.static(path.join('./', 'node_modules/vis-timeline'))); // dashboard main page
+app.use('/vis-timeline', express.static(path.join('./', 'node_modules/vis-timeline'))); // entry point routes
 
-app.get('/', (req, res) => {
-  res.render('pages/index');
-}); // solid auth routes
+const entryPointRouter = require('./routes/entry');
 
-const solidHass = require('./routes/solid-hass'); // …
+app.use('/', entryPointRouter); // dashboard routes
 
+const dashboardRouter = require('./routes/dashboard');
 
-app.use('/', solidHass);
+app.use('/dashboard', dashboardRouter); // solid auth routes
+
+const solidRouter = require('./routes/solid-hass');
+
+app.use('/', solidRouter);
 module.exports = app;
-},{"./routes/solid-hass":"routes/solid-hass.js"}],"index.js":[function(require,module,exports) {
+},{"./routes/entry":"routes/entry.js","./routes/dashboard":"routes/dashboard.js","./routes/solid-hass":"routes/solid-hass.js"}],"index.js":[function(require,module,exports) {
 const app = require('./app');
 
 const port = '8888';
