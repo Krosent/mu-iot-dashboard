@@ -225,22 +225,6 @@ app.use('/vis-timeline', express.static(path.join('./', 'node_modules/vis-timeli
 
 app.get('/', (req, res) => {
   res.render('pages/index');
-});
-let isCharging = false;
-app.get('/battery/api', async (req, res) => {
-  res.status(200).json({
-    charger_type: 'powerBank',
-    icon: 'battery',
-    is_charging: isCharging
-  });
-});
-app.get('/battery/api/:charging', async (req, res) => {
-  isCharging = req.params.charging;
-  res.status(200).json({
-    charger_type: 'powerBank',
-    icon: 'battery',
-    is_charging: isCharging
-  });
 }); // solid auth routes
 
 const solidHass = require('./routes/solid-hass'); // …
