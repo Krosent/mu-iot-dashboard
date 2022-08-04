@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"routes/entry.js":[function(require,module,exports) {
+})({"routes/entryRouter.js":[function(require,module,exports) {
 const express = require('express');
 
 const router = express.Router();
@@ -180,15 +180,46 @@ router.get('/logout', async (req, res) => {
   res.redirect('/');
 });
 module.exports = router;
-},{}],"routes/dashboard.js":[function(require,module,exports) {
+},{}],"controllers/dashboardController.js":[function(require,module,exports) {
+function dashboardView(res) {
+  res.render('pages/dashboard');
+}
+
+function fetchUserAutomationRules(username) {
+  // TODO: Implement
+  return username;
+}
+
+function fetchOtherUsersAutomationRules() {
+  // TODO: Implement
+  return 0;
+}
+
+module.exports = {
+  dashboardView,
+  fetchUserAutomationRules,
+  fetchOtherUsersAutomationRules
+};
+},{}],"routes/dashboardRouter.js":[function(require,module,exports) {
 const express = require('express');
 
 const router = express.Router();
+
+const {
+  dashboardView,
+  fetchUserAutomationRules,
+  fetchOtherUsersAutomationRules
+} = require('../controllers/dashboardController');
+
 router.get('/', (req, res) => {
-  res.render('pages/dashboard');
+  // TODO: Fetch User Rules
+  fetchUserAutomationRules('todo'); // TODO: Fetch Other User's Rules
+
+  fetchOtherUsersAutomationRules();
+  dashboardView(res);
 });
 module.exports = router;
-},{}],"routes/solid-hass.js":[function(require,module,exports) {
+},{"../controllers/dashboardController":"controllers/dashboardController.js"}],"routes/solidHassRouter.js":[function(require,module,exports) {
 const express = require('express');
 
 const fs = require('fs');
@@ -294,19 +325,19 @@ app.use('/js', express.static(path.join('./', 'node_modules/jquery/dist')));
 app.use('/popper', express.static(path.join('./', 'node_modules/@popperjs/core/dist')));
 app.use('/vis-timeline', express.static(path.join('./', 'node_modules/vis-timeline'))); // entry point routes
 
-const entryPointRouter = require('./routes/entry');
+const entryPointRouter = require('./routes/entryRouter');
 
 app.use('/', entryPointRouter); // dashboard routes
 
-const dashboardRouter = require('./routes/dashboard');
+const dashboardRouter = require('./routes/dashboardRouter');
 
 app.use('/dashboard', dashboardRouter); // solid auth routes
 
-const solidRouter = require('./routes/solid-hass');
+const solidRouter = require('./routes/solidHassRouter');
 
 app.use('/', solidRouter);
 module.exports = app;
-},{"./routes/entry":"routes/entry.js","./routes/dashboard":"routes/dashboard.js","./routes/solid-hass":"routes/solid-hass.js"}],"index.js":[function(require,module,exports) {
+},{"./routes/entryRouter":"routes/entryRouter.js","./routes/dashboardRouter":"routes/dashboardRouter.js","./routes/solidHassRouter":"routes/solidHassRouter.js"}],"index.js":[function(require,module,exports) {
 const app = require('./app');
 
 const port = '8888';
