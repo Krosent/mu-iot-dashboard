@@ -4,6 +4,7 @@
         <title>Dashboard</title>
         <link rel="stylesheet" href="./css/bootstrap.min.css">
         <link href="./vis-timeline/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="./css/font/bootstrap-icons.css">
         <script src="./vis-timeline/standalone/umd/vis-timeline-graph2d.min.js"></script>
     </head>
    
@@ -69,24 +70,29 @@
         <div class="container mt-4">
             <h4>Your Rules</h4>
             <div class="card" style="width: 18rem;">
-                <div class="card-body">
+                <div class="card-body bg-info">
                     <h5 class="card-title">Smart Screen #1</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Trigger: time is 9:00</h6>
                     <h6 class="card-subtitle mb-2 text-muted">Action: show crypto charts</h6>
                     <p class="card-text">Some random description...</p>
-                    <a href="#" class="card-link">Edit Rule</a>
-                    <a href="#" class="card-link">Delete Rule</a>
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        <button type="button" class="btn btn-success">Edit</button>
+                        <button type="button" class="btn btn-danger">Delete</button>
+                    </div>
                 </div>
             </div>
 
             <div class="card mt-4" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Thermostat #2</h5>
+                <div class="card-body bg-warning">
+                    <h5 class="card-title"><i class="bi bi-exclamation-circle-fill"></i> Thermostat #2</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Trigger: time is 9:00</h6>
                     <h6 class="card-subtitle mb-2 text-muted">Action: set temperature to 18C</h6>
                     <p class="card-text">Some random description...</p>
-                    <a href="#" class="card-link">Edit Rule</a>
-                    <a href="#" class="card-link">Delete Rule</a>
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        <button type="button" class="btn btn-secondary">Show Conflict</button>
+                        <button type="button" class="btn btn-success">Edit</button>
+                        <button type="button" class="btn btn-danger">Delete</button>
+                    </div>
                 </div>
             </div>
         </div>

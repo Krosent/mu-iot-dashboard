@@ -13,6 +13,11 @@ app.use(
 );
 
 app.use(
+  '/css',
+  express.static(path.join('./', 'node_modules/bootstrap-icons')),
+);
+
+app.use(
   '/js',
   express.static(path.join('./', 'node_modules/bootstrap/dist/js')),
 );
