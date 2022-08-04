@@ -8,18 +8,32 @@
     </head>
    
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark container-fluid">
             <a class="navbar-brand" href="#">Timeline Application</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarText">
+            <div class="collapse navbar-collapse container" id="navbarText">
               <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
                   <a class="nav-link" href="/">Home <span class="sr-only"></span></a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="/logout">Log Out</a>
+                </li>
+              </ul>
+              <ul class="nabar-nav">
+                <li class="nav-item mt-2">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Notifications: 0
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-lg-right">
+                          <li><a class="dropdown-item" href="#">Action</a></li>
+                          <li><a class="dropdown-item" href="#">Another action</a></li>
+                          <li><a class="dropdown-item" href="#">Something else jhereeee</a></li>
+                        </ul>
+                      </div>
                 </li>
               </ul>
             </div>
