@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
   fetchUserAutomationRules('todo');
 
   // TODO: Fetch Other User's Rules
-  fetchOtherUsersAutomationRules();
+  fetchOtherUsersAutomationRules(req);
 
   dashboardView(res);
 });
