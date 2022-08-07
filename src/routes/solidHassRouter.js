@@ -5,24 +5,6 @@ const SolidFileClient = require('solid-file-client');
 
 const router = express.Router();
 
-// This account is for server side
-/* idp: 'https://broker.pod.inrupt.com', // e.g. https://solidcommunity.net
-  username: 'iot-solid-bot',
-  password: 'kDLpdi!LK2AV84k',
-*/
-
-/*
-  User 1 SOLID account:
-  krosent
-  VtHf5NGuQffE2n7P
-*/
-
-/*
-  AleksandraVub SOLID account:
-  AleksandraVub
-  VtHf5NGuQffE2n7P
-*/
-
 router.get('/authorize/:username/:password', async (req, res) => {
   const client = new solidNodeClient.SolidNodeClient();
   const fileClient = new SolidFileClient(client);
