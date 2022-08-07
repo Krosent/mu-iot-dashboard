@@ -78,13 +78,8 @@ async function fetchOtherUsersAutomationRules(req) {
   return users;
 }
 
-function conflictResolution(currentUserRules, otherUsersRules, ruleCategories) {
-  // POC Level Implementation
-}
-
 module.exports = {
   dashboardView,
   fetchUserAutomationRules,
   fetchOtherUsersAutomationRules,
-  conflictResolution,
 };

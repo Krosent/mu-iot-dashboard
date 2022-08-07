@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const {
-  dashboardView, fetchUserAutomationRules, fetchOtherUsersAutomationRules, conflictResolution,
+  dashboardView, fetchUserAutomationRules, fetchOtherUsersAutomationRules,
 } = require('../controllers/dashboardController');
 
 router.get('/', async (req, res) => {
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
   console.log(`other users' rules: ${JSON.stringify(otherUsersRules)}`);
 
   // conflictResolution(currentUserRules, otherUsersRules, ruleCategories);
-  conflictResolution(null, null, null);
+  // conflictResolution(null, null, null);
 
   dashboardView(res);
 });
