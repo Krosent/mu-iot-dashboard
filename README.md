@@ -1,2 +1,3 @@
-# basic-solid-test-auth
-A JavaScript project
+# Multi User IoT Dashboard (mu-iot-dashboard)
+- This project is a part of thesis at Vrije Universiteit Brussel
+- Stack: Javascript, Node.js, Express.js, Solid Project
