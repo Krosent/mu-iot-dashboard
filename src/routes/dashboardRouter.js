@@ -4,14 +4,14 @@ const router = express.Router();
 
 const { dashboardView, fetchUserAutomationRules, fetchOtherUsersAutomationRules } = require('../controllers/dashboardController');
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   // TODO: Implement authorization check (low priority)
 
-  // TODO: Fetch User Rules
-  fetchUserAutomationRules('todo');
+  const thisUserRules = await fetchUserAutomationRules(req);
+  console.log(`this user rules: ${thisUserRules}`);
 
-  // TODO: Fetch Other User's Rules
-  fetchOtherUsersAutomationRules(req);
+  const otherUsersRules = await fetchOtherUsersAutomationRules(req);
+  console.log(`other users' rules: ${JSON.stringify(otherUsersRules)}`);
 
   dashboardView(res);
 });

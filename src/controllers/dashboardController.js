@@ -31,18 +31,23 @@ async function fetchAutomations(username, hostUsername, hostPassword) {
   throw new Error('Failed to load file');
 }
 
-function fetchUserAutomationRules(username) {
-  // TODO: Implement
-  return username;
+async function fetchUserAutomationRules(req) {
+  return fetchAutomations(
+    req.session.user,
+    req.session.user,
+    req.session.password,
+  );
 }
 
 async function fetchOtherUsersAutomationRules(req) {
   // POC Level Implementation
+  // Fetch Other Users Rules from Solid PODs
   const users = [];
 
   console.log(`session user: ${req.session.user}`);
 
   if (req.session.user !== 'AleksandraVub') {
+    // TODO: Secure Implementation needed
     const aleksandraRules = await fetchAutomations(
       'AleksandraVub',
       'iot-solid-bot',
@@ -57,6 +62,7 @@ async function fetchOtherUsersAutomationRules(req) {
   }
 
   if (req.session.user !== 'krosent') {
+    // TODO: Secure Implementation needed
     const krosentRules = await fetchAutomations(
       'krosent',
       'iot-solid-bot',
@@ -69,7 +75,6 @@ async function fetchOtherUsersAutomationRules(req) {
     });
   }
 
-  console.log(`users: ${JSON.stringify(users)}`);
   return users;
 }
 

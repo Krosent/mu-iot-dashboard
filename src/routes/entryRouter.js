@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const express = require('express');
 
 const router = express.Router();
@@ -44,6 +45,7 @@ router.post('/login', async (req, res) => {
       console.log(_session);
       if (_session.isLoggedIn) {
         req.session.user = req.body.username;
+        req.session.password = req.body.password; // not safe way to store user credentials in session, only for POC
         res.redirect('/');
       } else {
         sendLoginError(req, res, 'Session Login not Authorized');
