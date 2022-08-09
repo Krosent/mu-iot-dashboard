@@ -9,8 +9,6 @@
     </head>
    
     <body>
-      <!-- <%= currentUserRules[0]._id %> -->
-
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark container-fluid">
             <a class="navbar-brand" href="#">Timeline Application</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,26 +47,55 @@
 
         <div id="visualization" class="container mt-4"></div>
         <script type="text/javascript">
+            function parseTrigger(ruleTrigger) {
+              // Simple parsing for POC
+              // In real code it would better to have special parsing algorithm on backend side
+              const startTime = ruleTrigger.split("time is ")[1] + ':00';
+              const endTime = '17:00:00';
+              return [startTime, endTime];
+            }
+
             // DOM element where the Timeline will be attached
             var container = document.getElementById('visualization');
 
+            var currentUserRulesRaw = '<%- JSON.stringify(currentUserRules) %>';
+            var currentUserRulesJson = JSON.parse(currentUserRulesRaw);
+
+            var devices = [];
+            for (const [key, value] of Object.entries(currentUserRulesJson)) {
+              if(!devices.includes(value.device)) {
+                devices.push(value.device);
+              }
+            }
             var groups = new vis.DataSet();
-            groups.add({id: 1, content: 'smart-screen-0'})
-            groups.add({id: 2, content: 'thermostat-0'})
+            devices.forEach((device) => groups.add({id: device, content: device}));
 
-            var item2 = document.createElement('div');
-            // item2.style.backgroundColor = "green";
-            item2.innerHTML = 'show cryptocurrency chart <i class="bi bi-exclamation-circle-fill"></i>'
+            var _items = [];
+            for (const [key, value] of Object.entries(currentUserRulesJson)) {
+              let itemContent = '';
+              if (value.hasConflict) {
+                itemContent = value.action;
+              } else {
+                itemContent = value.action;
+              }
+              _items.push({ id: value.id, content: value.action, start: `2014-04-20T${parseTrigger(value.trigger)[0]}`, end: `2014-04-20T${parseTrigger(value.trigger)[1]}`, group: value.device});
+            }
+            var items = new vis.DataSet(_items);
 
-            // Create a DataSet (allows two way data-binding)
-            var items = new vis.DataSet([
-                //{ id: 1, content: 'item 1', start: '2014-04-20T01:00:00', group: 0 },
-                //{ id: 2, content: 'item 2', start: '2014-04-20T01:01:00', group: 0 },
-                //{ id: 3, content: 'item 3', start: '2014-04-20T01:04:00', group: 1 },
-                { id: 4, content: item2, start: '2014-04-20T09:00:00', end: '2014-04-20T17:00:00', group: 1 },
-                { id: 5, content: 'set temperature to 18C', start: '2014-04-20T09:00:00', end: '2014-04-20T17:00:00', group: 2 },
-                //{ id: 6, content: 'item 6', start: '2014-04-20T01:15:00', type: 'point', group: 2 }
-            ]);
+
+            // var item2 = document.createElement('div');
+            // // item2.style.backgroundColor = "green";
+            // item2.innerHTML = 'show cryptocurrency chart <i class="bi bi-exclamation-circle-fill"></i>'
+
+            // // Create a DataSet (allows two way data-binding)
+            // var items = new vis.DataSet([
+            //     //{ id: 1, content: 'item 1', start: '2014-04-20T01:00:00', group: 0 },
+            //     //{ id: 2, content: 'item 2', start: '2014-04-20T01:01:00', group: 0 },
+            //     //{ id: 3, content: 'item 3', start: '2014-04-20T01:04:00', group: 1 },
+            //     { id: 4, content: item2, start: '2014-04-20T09:00:00', end: '2014-04-20T17:00:00', group: 'screen-0' },
+            //     { id: 5, content: 'set temperature to 18C', start: '2014-04-20T09:00:00', end: '2014-04-20T17:00:00', group: 'thermostat-0' },
+            //     //{ id: 6, content: 'item 6', start: '2014-04-20T01:15:00', type: 'point', group: 2 }
+            // ]);
 
             // Configuration for the Timeline
             var options = {};
