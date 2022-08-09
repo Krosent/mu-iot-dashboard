@@ -83,21 +83,6 @@
             }
             var items = new vis.DataSet(_items);
 
-
-            // var item2 = document.createElement('div');
-            // // item2.style.backgroundColor = "green";
-            // item2.innerHTML = 'show cryptocurrency chart <i class="bi bi-exclamation-circle-fill"></i>'
-
-            // // Create a DataSet (allows two way data-binding)
-            // var items = new vis.DataSet([
-            //     //{ id: 1, content: 'item 1', start: '2014-04-20T01:00:00', group: 0 },
-            //     //{ id: 2, content: 'item 2', start: '2014-04-20T01:01:00', group: 0 },
-            //     //{ id: 3, content: 'item 3', start: '2014-04-20T01:04:00', group: 1 },
-            //     { id: 4, content: item2, start: '2014-04-20T09:00:00', end: '2014-04-20T17:00:00', group: 'screen-0' },
-            //     { id: 5, content: 'set temperature to 18C', start: '2014-04-20T09:00:00', end: '2014-04-20T17:00:00', group: 'thermostat-0' },
-            //     //{ id: 6, content: 'item 6', start: '2014-04-20T01:15:00', type: 'point', group: 2 }
-            // ]);
-
             // Configuration for the Timeline
             var options = {};
 
@@ -108,32 +93,36 @@
 
         <div class="container mt-4">
             <h4>Your Rules</h4>
-            <div class="card" style="width: 18rem;">
-                <div class="card-body bg-info">
-                    <h5 class="card-title">Smart Screen #1</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Trigger: time is 9:00</h6>
-                    <h6 class="card-subtitle mb-2 text-muted">Action: show crypto charts</h6>
-                    <p class="card-text">Some random description...</p>
-                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                        <button type="button" class="btn btn-success">Edit</button>
-                        <button type="button" class="btn btn-danger">Delete</button>
+              <% for(const [key, value] of Object.entries(currentUserRules)){  %>
+                <% if(value.hasConflict){ %>
+                  <div class="card mt-4" style="width: 18rem;">
+                    <div class="card-body bg-warning">
+                        <h5 class="card-title"><i class="bi bi-exclamation-circle-fill"></i> <%= value.device %></h5>
+                        <h6 class="card-subtitle mb-2 text-muted"><%= value.trigger %></h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><%= value.action %></h6>
+                        <p class="card-text"><%= value.description %>.</p>
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button type="button" class="btn btn-secondary">Show Conflict</button>
+                            <button type="button" class="btn btn-success">Edit</button>
+                            <button type="button" class="btn btn-danger">Delete</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="card mt-4" style="width: 18rem;">
-                <div class="card-body bg-warning">
-                    <h5 class="card-title"><i class="bi bi-exclamation-circle-fill"></i> Thermostat #2</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Trigger: time is 9:00</h6>
-                    <h6 class="card-subtitle mb-2 text-muted">Action: set temperature to 18C</h6>
-                    <p class="card-text">Some random description...</p>
-                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                        <button type="button" class="btn btn-secondary">Show Conflict</button>
-                        <button type="button" class="btn btn-success">Edit</button>
-                        <button type="button" class="btn btn-danger">Delete</button>
+                <% } else{ %>  
+                  <div class="card" style="width: 18rem;">
+                    <div class="card-body bg-info">
+                        <h5 class="card-title"><%= value.device %></h5>
+                        <h6 class="card-subtitle mb-2 text-muted"><%= value.trigger %></h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><%= value.action %></h6>
+                        <p class="card-text"><%= value.description %></p>
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button type="button" class="btn btn-success">Edit</button>
+                            <button type="button" class="btn btn-danger">Delete</button>
+                        </div>
                     </div>
                 </div>
-            </div>
+               <% } %>
+              <%} %>
         </div>
 
 
