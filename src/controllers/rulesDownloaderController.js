@@ -2,7 +2,7 @@
 const solidNodeClient = require('solid-node-client');
 const SolidFileClient = require('solid-file-client');
 
-// hardcoded values
+// hardcoded values. Onboarding is not implemented for POC
 const allUsers = ['krosent', 'AleksandraVub'];
 
 async function fetchAutomations(username, hostUsername, hostPassword) {

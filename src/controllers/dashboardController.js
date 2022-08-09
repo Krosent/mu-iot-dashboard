@@ -1,11 +1,15 @@
 /* eslint-disable no-console */
-const solidNodeClient = require('solid-node-client');
-const SolidFileClient = require('solid-file-client');
+
+// TODO: To remove this dependencies
+// const solidNodeClient = require('solid-node-client');
+// const SolidFileClient = require('solid-file-client');
 
 function dashboardView(res, rules) {
   res.render('pages/dashboard', { currentUserRules: rules });
 }
 
+// TODO: To be removed
+/*
 async function fetchAutomations(username, hostUsername, hostPassword) {
   const client = new solidNodeClient.SolidNodeClient();
   const fileClient = new SolidFileClient(client);
@@ -77,9 +81,10 @@ async function fetchOtherUsersAutomationRules(req) {
 
   return users;
 }
+*/
 
 module.exports = {
   dashboardView,
-  fetchUserAutomationRules,
-  fetchOtherUsersAutomationRules,
+  // fetchUserAutomationRules,
+  // fetchOtherUsersAutomationRules,
 };
