@@ -36,4 +36,8 @@ const RuleSchema = new mongoose.Schema({
 
 const Rule = mongoose.model('Rule', RuleSchema);
 
-module.exports = { Rule };
+function getRulesByName(user) {
+  return Rule.find({ username: user });
+}
+
+module.exports = { Rule, getRulesByName };

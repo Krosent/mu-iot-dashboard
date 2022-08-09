@@ -2,8 +2,8 @@
 const solidNodeClient = require('solid-node-client');
 const SolidFileClient = require('solid-file-client');
 
-function dashboardView(res) {
-  res.render('pages/dashboard');
+function dashboardView(res, rules) {
+  res.render('pages/dashboard', { currentUserRules: rules });
 }
 
 async function fetchAutomations(username, hostUsername, hostPassword) {

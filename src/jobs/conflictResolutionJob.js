@@ -5,7 +5,6 @@ const { Rule } = require('../models/rule');
 
 exports.initConflictResolutionJob = () => {
   const scheduledJobFunction = CronJob.schedule('*/30 * * * * *', async () => {
-    console.log("I'm executed on a schedule!");
     // Fetch users rules and save them into state store
     const rulesWithUsername = await rulesDownloaderController.downloadAllAutomationRules();
 
