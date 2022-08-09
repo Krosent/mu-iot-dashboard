@@ -10,21 +10,10 @@ const {
 router.get('/', async (req, res) => {
   // TODO: Implement authorization check (low priority)
 
-  // TODO: Fetch current user rules
+  // Fetch current user rules from state store
   const rules = await getRulesByName(req.session.user);
 
   console.log(`Dashboard Rules: ${rules}`);
-
-  /*
-  const thisUserRules = await fetchUserAutomationRules(req);
-  console.log(`this user rules: ${thisUserRules}`);
-
-  const otherUsersRules = await fetchOtherUsersAutomationRules(req);
-  console.log(`other users' rules: ${JSON.stringify(otherUsersRules)}`);
-  */
-
-  // conflictResolution(currentUserRules, otherUsersRules, ruleCategories);
-  // conflictResolution(null, null, null);
 
   dashboardView(res, rules);
 });
