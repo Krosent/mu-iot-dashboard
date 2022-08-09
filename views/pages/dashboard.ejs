@@ -74,11 +74,12 @@
             for (const [key, value] of Object.entries(currentUserRulesJson)) {
               let itemContent = '';
               if (value.hasConflict) {
-                itemContent = value.action;
+                itemContent = document.createElement('div');
+                itemContent.innerHTML = `${value.action} <i class="bi bi-exclamation-circle-fill"></i>`;
               } else {
                 itemContent = value.action;
               }
-              _items.push({ id: value.id, content: value.action, start: `2014-04-20T${parseTrigger(value.trigger)[0]}`, end: `2014-04-20T${parseTrigger(value.trigger)[1]}`, group: value.device});
+              _items.push({ id: value.id, content: itemContent, start: `2014-04-20T${parseTrigger(value.trigger)[0]}`, end: `2014-04-20T${parseTrigger(value.trigger)[1]}`, group: value.device});
             }
             var items = new vis.DataSet(_items);
 
