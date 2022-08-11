@@ -97,9 +97,11 @@
                 <% if(value.hasConflict){ %>
                   <div class="card mt-4" style="width: 18rem;">
                     <div class="card-body bg-warning">
-                        <h5 class="card-title"><i class="bi bi-exclamation-circle-fill"></i> <%= value.device %></h5>
-                        <h6 class="card-subtitle mb-2 text-muted"><%= value.trigger %></h6>
-                        <h6 class="card-subtitle mb-2 text-muted"><%= value.action %></h6>
+                        <h5 class="card-title"><i class="bi bi-exclamation-circle-fill"></i> device: <%= value.device %></h5>
+                        <hr>
+                        <h6 class="card-subtitle mb-2 text">trigger: <%= value.trigger %></h6>
+                        <h6 class="card-subtitle mb-2 text">action: <%= value.action %></h6>
+                        <hr>
                         <p class="card-text"><%= value.description %>.</p>
                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                             <button type="button" class="btn btn-secondary">Show Conflict</button>
@@ -111,9 +113,11 @@
                 <% } else{ %>  
                   <div class="card" style="width: 18rem;">
                     <div class="card-body bg-info">
-                        <h5 class="card-title"><%= value.device %></h5>
-                        <h6 class="card-subtitle mb-2 text-muted"><%= value.trigger %></h6>
-                        <h6 class="card-subtitle mb-2 text-muted"><%= value.action %></h6>
+                        <h5 class="card-title">device: <%= value.device %></h5>
+                        <hr>
+                        <h6 class="card-subtitle mb-2 text">trigger: <%= value.trigger %></h6>
+                        <h6 class="card-subtitle mb-2 text">action: <%= value.action %></h6>
+                        <hr>
                         <p class="card-text"><%= value.description %></p>
                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                             <button type="button" class="btn btn-success">Edit</button>
