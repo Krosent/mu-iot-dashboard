@@ -2,8 +2,16 @@
 /* eslint-disable max-len */
 /* eslint-disable no-console */
 // const mongoose = require('mongoose');
-const { getGroupedConflictingRules } = require('../models/rule');
+const { getGroupedConflictingRules, setRuleHasConflict, unsetRuleHasConflict } = require('../models/rule');
 const { getUserPrioritySelectionByName } = require('../models/userRulePrioritySelection');
+
+async function suppressRuleWithLowerScore(ruleToSuppress, otherRules) {
+  console.log(`Rule Suppressed: ${JSON.stringify(ruleToSuppress)}`);
+  await setRuleHasConflict(ruleToSuppress.ruleId);
+  otherRules.forEach(async (r) => unsetRuleHasConflict(r.ruleId));
+
+  // TODO: Save Logs to Datastore regarding why certain rule was suppressed
+}
 
 async function executeConflictResolution() {
   // POC Level Implementation
@@ -22,12 +30,20 @@ async function executeConflictResolution() {
         const rulePrioritiesForUser = await getUserPrioritySelectionByName(rule.username, rule.category);
         const rulePriorityScoreForUser = rulePrioritiesForUser.prioritySelectionList.filter((selection) => selection.name === rule.category)[0].score;
         return ({
-          ruleId: rule._id, username: rule.username, category: rule.category, userScore: rulePriorityScoreForUser,
+          ruleId: rule.ruleId, username: rule.username, category: rule.category, userScore: rulePriorityScoreForUser,
         });
       });
 
     const conflictingUsersResolved = await Promise.all(conflictingUsers);
-    console.log(`Conflicting user: ${JSON.stringify(conflictingUsersResolved)}`);
+
+    const maxScoreRule = conflictingUsersResolved.reduce((prev, current) => ((prev.userScore > current.userScore) ? prev : current));
+    const minScoreRule = conflictingUsersResolved.reduce((prev, current) => ((prev.userScore < current.userScore) ? prev : current));
+
+    if (minScoreRule === maxScoreRule) {
+      throw new Error('Rules with the same score are not supported for the moment');
+    }
+    // Update Rule in the Data Store
+    suppressRuleWithLowerScore(minScoreRule, [maxScoreRule]);
   });
   // Determine users
   // Determine rule priority

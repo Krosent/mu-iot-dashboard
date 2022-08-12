@@ -16,7 +16,6 @@ const UserPrioritySelectionSchema = new mongoose.Schema({
 const UserPrioritySelection = mongoose.model('UserPrioritySelection', UserPrioritySelectionSchema);
 
 function getUserPrioritySelectionByName(username, priorityName) {
-  console.log(`prirority name: ${priorityName}`);
   return UserPrioritySelection.findOne({ username, 'prioritySelectionList.name': { $eq: priorityName } }).select('prioritySelectionList.name prioritySelectionList.score -_id');
 }
 

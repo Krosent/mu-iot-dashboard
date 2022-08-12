@@ -62,6 +62,19 @@ function getGroupedConflictingRules() {
   );
 }
 
+function setRuleHasConflict(id) {
+  return Rule.findByIdAndUpdate({ _id: id }, { hasConflict: true });
+}
+
+function unsetRuleHasConflict(id) {
+  return Rule.findByIdAndUpdate({ _id: id }, { hasConflict: false });
+}
+
 module.exports = {
-  Rule, getRulesByName, getAllRules, getGroupedConflictingRules,
+  Rule,
+  getRulesByName,
+  getAllRules,
+  getGroupedConflictingRules,
+  setRuleHasConflict,
+  unsetRuleHasConflict,
 };
