@@ -54,8 +54,6 @@ function getGroupedConflictingRules() {
             device: '$device',
             trigger: '$trigger',
           },
-          // device: { $first: '$device' },
-          // trigger: { $first: '$trigger' },
           numberOfSimilarRules: { $sum: 1 },
           conflictRules: { $push: '$$ROOT' },
         },
