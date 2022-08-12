@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const PrioritySelectionSchema = new mongoose.Schema({
+  _id: Number,
   name: {
     type: String,
     required: true,

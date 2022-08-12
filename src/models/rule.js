@@ -40,4 +40,30 @@ function getRulesByName(user) {
   return Rule.find({ username: user });
 }
 
-module.exports = { Rule, getRulesByName };
+function getAllRules() {
+  const filter = {};
+  return Rule.find(filter);
+}
+
+function getGroupedConflictingRules() {
+  return Rule.aggregate(
+    [
+      {
+        $group: {
+          _id: {
+            device: '$device',
+            trigger: '$trigger',
+          },
+          // device: { $first: '$device' },
+          // trigger: { $first: '$trigger' },
+          numberOfSimilarRules: { $sum: 1 },
+          conflictRules: { $push: '$$ROOT' },
+        },
+      },
+    ],
+  );
+}
+
+module.exports = {
+  Rule, getRulesByName, getAllRules, getGroupedConflictingRules,
+};
