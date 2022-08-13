@@ -105,12 +105,33 @@
                         <hr>
                         <p class="card-text"><%= value.description %>.</p>
                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                            <button type="button" class="btn btn-secondary">Show Conflict</button>
-                            <button type="button" class="btn btn-success">Edit</button>
-                            <button type="button" class="btn btn-danger">Delete</button>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#sr-<%= value.id %>">Conflict Info</button>
                         </div>
                     </div>
-                </div>
+                  </div>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="sr-<%= value.id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Your Rule was suppressed!</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <p><b>Reason: </b>Your rule has lower priority</p>
+                          <p><b>Device: </b><%= value.device %></p>
+                          <p><b>Your Rule Category: </b><%= value.category %></p>
+                          <p><b>Your Rule Category Score: </b><%= (conflictingRules.filter((rule) => rule.affectedRuleId === value.id))[0].affectedRuleScore %></p>
+                          <p><b>Suppressor Rule Category: </b><%= (conflictingRules.filter((rule) => rule.affectedRuleId === value.id))[0].suppressorRuleCategory %></p>
+                          <p><b>Suppressor Rule Category Score: </b><%= (conflictingRules.filter((rule) => rule.affectedRuleId === value.id))[0].suppressorRuleScore %></p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 <% } else{ %>  
                   <div class="card" style="width: 18rem;">
                     <div class="card-body bg-info">
@@ -121,8 +142,6 @@
                         <hr>
                         <p class="card-text"><%= value.description %></p>
                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                            <button type="button" class="btn btn-success">Edit</button>
-                            <button type="button" class="btn btn-danger">Delete</button>
                         </div>
                     </div>
                 </div>

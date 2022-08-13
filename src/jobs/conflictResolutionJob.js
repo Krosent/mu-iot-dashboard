@@ -46,7 +46,7 @@ async function prepareUserPriorities() {
     username: krosent.username, prioritySelectionList: krosent.prioritySelectionList,
   };
   const update1 = {
-    prioritySelectionList: krosent.prioritySelectionList,
+    username: krosent.username, prioritySelectionList: krosent.prioritySelectionList,
   };
   const options1 = { upsert: true, new: true, setDefaultsOnInsert: true };
   await UserPrioritySelection.findOneAndUpdate(query1, update1, options1).catch((err) => console.log(`error is here: ${err}`));

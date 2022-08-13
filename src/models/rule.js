@@ -67,7 +67,7 @@ function setRuleHasConflict(id) {
 }
 
 function unsetRuleHasConflict(id) {
-  return Rule.findByIdAndUpdate({ _id: id }, { hasConflict: false });
+  return Rule.findByIdAndUpdate({ _id: id }, { $set: { hasConflict: false } }, () => {});
 }
 
 module.exports = {
