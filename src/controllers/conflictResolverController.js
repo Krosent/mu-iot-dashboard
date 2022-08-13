@@ -4,38 +4,7 @@
 // const mongoose = require('mongoose');
 const { getGroupedConflictingRules, setRuleHasConflict, unsetRuleHasConflict } = require('../models/rule');
 const { getUserPrioritySelectionByName } = require('../models/userRulePrioritySelection');
-const { SuppressedRuleLog } = require('../models/suppressedRuleLog');
-
-async function saveSuppressionLogs(suppressedRule, suppressorRule) {
-  const query = {
-    affectedRuleId: suppressedRule.ruleId,
-    affectedUser: suppressedRule.username,
-    affectedRuleCategory: suppressedRule.category,
-    affectedTrigger: suppressedRule.trigger,
-    affectedAction: suppressedRule.action,
-    affectedDevice: suppressedRule.device,
-    affectedRuleScore: suppressedRule.userScore,
-    suppressorUsername: suppressorRule.username,
-    suppressorRuleCategory: suppressorRule.category,
-    suppressorRuleId: suppressorRule.ruleId,
-    suppressorRuleScore: suppressorRule.userScore,
-  };
-  const update = {
-    affectedRuleId: suppressedRule.ruleId,
-    affectedUser: suppressedRule.username,
-    affectedRuleCategory: suppressedRule.category,
-    affectedTrigger: suppressedRule.trigger,
-    affectedAction: suppressedRule.action,
-    affectedDevice: suppressedRule.device,
-    affectedRuleScore: suppressedRule.userScore,
-    suppressorUsername: suppressorRule.username,
-    suppressorRuleCategory: suppressorRule.category,
-    suppressorRuleId: suppressorRule.ruleId,
-    suppressorRuleScore: suppressorRule.userScore,
-  };
-  const options = { upsert: true, new: true, setDefaultsOnInsert: true };
-  await SuppressedRuleLog.findOneAndUpdate(query, update, options).catch((err) => console.log(`error is here: ${err}`));
-}
+const { saveSuppressionLogs } = require('../models/suppressedRuleLog');
 
 async function suppressRulesWithLowerScore(ruleSuppressor, rulesToSuppress) {
   // For POC we consider only rule suppression mechanism handling between two rules only
@@ -47,7 +16,7 @@ async function suppressRulesWithLowerScore(ruleSuppressor, rulesToSuppress) {
   rulesToSuppress.forEach(async (r) => {
     console.log(`Rule Suppressed: ${JSON.stringify(r)}`);
     // TODO: Save Logs to Datastore regarding why certain rule was suppressed
-    saveSuppressionLogs(r, ruleSuppressor);
+    await saveSuppressionLogs(r, ruleSuppressor);
     return setRuleHasConflict(r.ruleId);
   });
 }

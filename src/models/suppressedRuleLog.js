@@ -53,7 +53,39 @@ function getSuppressedRulesByAffectedUser(username) {
   return SuppressedRuleLog.find({ affectedUser: username });
 }
 
+function saveSuppressionLogs(suppressedRule, suppressorRule) {
+  const query = {
+    affectedRuleId: suppressedRule.ruleId,
+    affectedUser: suppressedRule.username,
+    affectedRuleCategory: suppressedRule.category,
+    affectedTrigger: suppressedRule.trigger,
+    affectedAction: suppressedRule.action,
+    affectedDevice: suppressedRule.device,
+    affectedRuleScore: suppressedRule.userScore,
+    suppressorUsername: suppressorRule.username,
+    suppressorRuleCategory: suppressorRule.category,
+    suppressorRuleId: suppressorRule.ruleId,
+    suppressorRuleScore: suppressorRule.userScore,
+  };
+  const update = {
+    affectedRuleId: suppressedRule.ruleId,
+    affectedUser: suppressedRule.username,
+    affectedRuleCategory: suppressedRule.category,
+    affectedTrigger: suppressedRule.trigger,
+    affectedAction: suppressedRule.action,
+    affectedDevice: suppressedRule.device,
+    affectedRuleScore: suppressedRule.userScore,
+    suppressorUsername: suppressorRule.username,
+    suppressorRuleCategory: suppressorRule.category,
+    suppressorRuleId: suppressorRule.ruleId,
+    suppressorRuleScore: suppressorRule.userScore,
+  };
+  const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+  return SuppressedRuleLog.findOneAndUpdate(query, update, options).catch((err) => console.log(`error is here: ${err}`));
+}
+
 module.exports = {
   SuppressedRuleLog,
   getSuppressedRulesByAffectedUser,
+  saveSuppressionLogs,
 };

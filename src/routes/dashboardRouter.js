@@ -5,7 +5,7 @@ const { getRulesByName } = require('../models/rule');
 const { getSuppressedRulesByAffectedUser } = require('../models/suppressedRuleLog');
 
 const {
-  dashboardView, // fetchUserAutomationRules, fetchOtherUsersAutomationRules,
+  dashboardView,
 } = require('../controllers/dashboardController');
 
 router.get('/', async (req, res) => {
