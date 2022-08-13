@@ -37,13 +37,17 @@ const SuppressedRuleLogSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  suppressorRuleId: {
+    type: String,
+    required: true,
+  },
   suppressorRuleScore: {
     type: Number,
     required: true,
   },
 });
 
-const SuppressedRuleLog = mongoose.model('Rule', SuppressedRuleLogSchema);
+const SuppressedRuleLog = mongoose.model('SuppressedRuleLog', SuppressedRuleLogSchema);
 
 function getSuppressedRulesByAffectedUser(username) {
   return SuppressedRuleLog.find({ affectedUser: username });
