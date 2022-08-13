@@ -5,12 +5,18 @@
 const { getGroupedConflictingRules, setRuleHasConflict, unsetRuleHasConflict } = require('../models/rule');
 const { getUserPrioritySelectionByName } = require('../models/userRulePrioritySelection');
 
-async function suppressRuleWithLowerScore(ruleToSuppress, otherRules) {
-  console.log(`Rule Suppressed: ${JSON.stringify(ruleToSuppress)}`);
-  await setRuleHasConflict(ruleToSuppress.ruleId);
-  otherRules.forEach(async (r) => unsetRuleHasConflict(r.ruleId));
+async function suppressRulesWithLowerScore(ruleSuppressor, rulesToSuppress) {
+  // For POC we consider only rule suppression mechanism handling between two rules only
 
-  // TODO: Save Logs to Datastore regarding why certain rule was suppressed
+  // Suppressor rule which state we set to false
+  unsetRuleHasConflict(ruleSuppressor.ruleId);
+
+  // Other rules must be suppressed
+  rulesToSuppress.forEach(async (r) => {
+    console.log(`Rule Suppressed: ${JSON.stringify(r)}`);
+    // TODO: Save Logs to Datastore regarding why certain rule was suppressed
+    return setRuleHasConflict(r.ruleId);
+  });
 }
 
 async function executeConflictResolution() {
@@ -34,16 +40,19 @@ async function executeConflictResolution() {
         });
       });
 
-    const conflictingUsersResolved = await Promise.all(conflictingUsers);
+    const conflictingUsersPromiseResolved = await Promise.all(conflictingUsers);
+    console.log(`COnflicting rules: ${JSON.stringify(conflictingUsersPromiseResolved)}`);
 
-    const maxScoreRule = conflictingUsersResolved.reduce((prev, current) => ((prev.userScore > current.userScore) ? prev : current));
-    const minScoreRule = conflictingUsersResolved.reduce((prev, current) => ((prev.userScore < current.userScore) ? prev : current));
+    const maxScoreRule = conflictingUsersPromiseResolved.reduce((prev, current) => ((prev.userScore > current.userScore) ? prev : current));
+    const minScoreRule = conflictingUsersPromiseResolved.reduce((prev, current) => ((prev.userScore < current.userScore) ? prev : current));
+    const rulesToSuppress = conflictingUsersPromiseResolved.filter((rule) => rule !== maxScoreRule);
 
     if (minScoreRule === maxScoreRule) {
       throw new Error('Rules with the same score are not supported for the moment');
     }
     // Update Rule in the Data Store
-    suppressRuleWithLowerScore(minScoreRule, [maxScoreRule]);
+    // (ruleSuppressor, rulesToSuppress)
+    suppressRulesWithLowerScore(maxScoreRule, rulesToSuppress);
   });
   // Determine users
   // Determine rule priority
