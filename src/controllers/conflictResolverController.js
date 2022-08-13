@@ -24,13 +24,13 @@ async function executeConflictResolution() {
   groupedRules.forEach(async (group) => {
     const conflictingUsers = await group.conflictRules
       .map((rule) => ({
-        ruleId: rule._id, username: rule.username, category: rule.category,
+        ruleId: rule._id, username: rule.username, category: rule.category, device: rule.device, trigger: rule.trigger, action: rule.action,
       }))
       .map(async (rule) => {
         const rulePrioritiesForUser = await getUserPrioritySelectionByName(rule.username, rule.category);
         const rulePriorityScoreForUser = rulePrioritiesForUser.prioritySelectionList.filter((selection) => selection.name === rule.category)[0].score;
         return ({
-          ruleId: rule.ruleId, username: rule.username, category: rule.category, userScore: rulePriorityScoreForUser,
+          ruleId: rule.ruleId, username: rule.username, category: rule.category, device: rule.device, trigger: rule.trigger, action: rule.action, userScore: rulePriorityScoreForUser,
         });
       });
 
