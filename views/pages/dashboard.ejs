@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Dashboard</title>
+        <title>MU-IoT-Dashboard</title>
         <link rel="stylesheet" href="./css/bootstrap.min.css">
         <link href="./vis-timeline/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="./css/font/bootstrap-icons.css">
@@ -42,8 +42,8 @@
         </nav>
 
         <div class="container mt-4">
-            <h1>Timeline Application</h1>
-            <h4>Artyom Kuznetsov</h4>
+            <h1>MU-IoT Timeline Application</h1>
+            <h4>Hi, <%= currentUser %>!</h4>
         </div>
 
         <div id="visualization" class="container mt-4"></div>
@@ -133,7 +133,7 @@
                     </div>
                   </div>
                 <% } else{ %>  
-                  <div class="card" style="width: 18rem;">
+                  <div class="card mt-4" style="width: 18rem;">
                     <div class="card-body bg-info">
                         <h5 class="card-title">device: <%= value.device %></h5>
                         <hr>

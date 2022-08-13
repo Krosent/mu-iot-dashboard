@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 
   console.log(`Dashboard Rules: ${rules}`);
 
-  dashboardView(res, rules, conflictingRules);
+  dashboardView(res, rules, conflictingRules, req.session.user);
 });
 
 module.exports = router;
