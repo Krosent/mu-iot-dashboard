@@ -30,6 +30,11 @@ app.use(
 );
 
 app.use(
+  '/public',
+  express.static(path.join('./', 'public')),
+);
+
+app.use(
   '/js',
   express.static(path.join('./', 'node_modules/bootstrap/dist/js')),
 );
