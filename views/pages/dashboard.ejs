@@ -76,6 +76,8 @@
               let itemContent = '';
               if (value.hasConflict) {
                 itemContent = document.createElement('div');
+                itemContent.setAttribute('data-bs-toggle', 'modal');
+                itemContent.setAttribute('data-bs-target', `#sr-${value._id}`);
                 itemContent.innerHTML = `${value.action} <i class="bi bi-exclamation-circle-fill"></i>`;
               } else {
                 itemContent = value.action;
@@ -121,8 +123,10 @@
                         <div class="modal-body">
                           <p><b>Reason: </b>Your rule has lower priority</p>
                           <p><b>Device: </b><%= value.device %></p>
+                          <hr>
                           <p><b>Your Rule Category: </b><%= value.category %></p>
                           <p><b>Your Rule Category Score: </b><%= (conflictingRules.filter((rule) => rule.affectedRuleId === value.id))[0].affectedRuleScore %></p>
+                          <hr>
                           <p><b>Suppressor Rule Category: </b><%= (conflictingRules.filter((rule) => rule.affectedRuleId === value.id))[0].suppressorRuleCategory %></p>
                           <p><b>Suppressor Rule Category Score: </b><%= (conflictingRules.filter((rule) => rule.affectedRuleId === value.id))[0].suppressorRuleScore %></p>
                         </div>
