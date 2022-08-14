@@ -4,7 +4,7 @@
 
 # Installation Guide
 * First of all you need to install a local instance of MongoDB (https://www.mongodb.com/docs/manual/installation/)
-* After MongoDB is installed you need to update app.js file (:49) where mongoose.connect function is located with your credentials
+* After MongoDB is installed you need to update `app.js` file `(:49)` where `mongoose.connect` function is located with your own credentials
 * The second step is to have NPM (https://www.npmjs.com/) on your machine
 * In the root folder of the project you need to execute command `npm install`
 * You are ready to run our application, you need to execute following NPM command: `npm start`
