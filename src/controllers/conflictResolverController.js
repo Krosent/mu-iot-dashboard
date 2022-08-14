@@ -15,7 +15,7 @@ async function suppressRulesWithLowerScore(ruleSuppressor, rulesToSuppress) {
   // Other rules must be suppressed
   rulesToSuppress.forEach(async (r) => {
     console.log(`Rule Suppressed: ${JSON.stringify(r)}`);
-    // TODO: Save Logs to Datastore regarding why certain rule was suppressed
+    // Save Logs to Datastore regarding why certain rule was suppressed
     await saveSuppressionLogs(r, ruleSuppressor);
     return setRuleHasConflict(r.ruleId);
   });
