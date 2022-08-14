@@ -14,4 +14,8 @@ const PrioritySelectionSchema = new mongoose.Schema({
 
 const PrioritySelection = mongoose.model('PrioritySelection', PrioritySelectionSchema);
 
-module.exports = { PrioritySelection, PrioritySelectionSchema };
+function getPrioritySelectionByName(name) {
+  return PrioritySelection.findOne({ name }).catch((err) => console.log(`could not find priority selection by name: ${err}`));
+}
+
+module.exports = { PrioritySelection, PrioritySelectionSchema, getPrioritySelectionByName };

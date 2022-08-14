@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 // const mongoose = require('mongoose');
 const { getGroupedConflictingRules, setRuleHasConflict, unsetRuleHasConflict } = require('../models/rule');
-const { getUserPrioritySelectionByName } = require('../models/userRulePrioritySelection');
+const { getPrioritySelectionByName } = require('../models/prioritySelection');
 const { saveSuppressionLogs } = require('../models/suppressedRuleLog');
 
 async function suppressRulesWithLowerScore(ruleSuppressor, rulesToSuppress) {
@@ -35,15 +35,15 @@ async function executeConflictResolution() {
         ruleId: rule._id, username: rule.username, category: rule.category, device: rule.device, trigger: rule.trigger, action: rule.action,
       }))
       .map(async (rule) => {
-        const rulePrioritiesForUser = await getUserPrioritySelectionByName(rule.username, rule.category);
-        const rulePriorityScoreForUser = rulePrioritiesForUser.prioritySelectionList.filter((selection) => selection.name === rule.category)[0].score;
+        // const rulePrioritiesForUser = await getUserPrioritySelectionByName(rule.username, rule.category);
+        const rulePrioritiesForUser = await getPrioritySelectionByName(rule.category);
         return ({
-          ruleId: rule.ruleId, username: rule.username, category: rule.category, device: rule.device, trigger: rule.trigger, action: rule.action, userScore: rulePriorityScoreForUser,
+          ruleId: rule.ruleId, username: rule.username, category: rule.category, device: rule.device, trigger: rule.trigger, action: rule.action, userScore: rulePrioritiesForUser.score,
         });
       });
 
     const conflictingUsersPromiseResolved = await Promise.all(conflictingUsers);
-    console.log(`COnflicting rules: ${JSON.stringify(conflictingUsersPromiseResolved)}`);
+    console.log(`Conflicting rules: ${JSON.stringify(conflictingUsersPromiseResolved)}`);
 
     const maxScoreRule = conflictingUsersPromiseResolved.reduce((prev, current) => ((prev.userScore > current.userScore) ? prev : current));
     const minScoreRule = conflictingUsersPromiseResolved.reduce((prev, current) => ((prev.userScore < current.userScore) ? prev : current));

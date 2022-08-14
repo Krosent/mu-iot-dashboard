@@ -1,30 +1,32 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>MU-IoT-Dashboard</title>
-        <link rel="stylesheet" href="./css/bootstrap.min.css">
-        <link href="./vis-timeline/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="./css/font/bootstrap-icons.css">
-        <link rel="icon" type="image/x-icon" href="./public/favicon.png">
-        <script src="./vis-timeline/standalone/umd/vis-timeline-graph2d.min.js"></script>
-    </head>
-   
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-secondary container-fluid">
-            <a class="navbar-brand" href="/">&nbsp&nbsp MU-IoT Timeline Application</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse container" id="navbarText">
-              <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                  <a class="nav-link" href="/">Home <span class="sr-only"></span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/logout">Log Out</a>
-                </li>
-              </ul>
-              <!-- <ul class="nabar-nav">
+
+<head>
+  <title>MU-IoT-Dashboard</title>
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link href="./vis-timeline/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/font/bootstrap-icons.css">
+  <link rel="icon" type="image/x-icon" href="./public/favicon.png">
+  <script src="./vis-timeline/standalone/umd/vis-timeline-graph2d.min.js"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary container-fluid">
+    <a class="navbar-brand" href="/">&nbsp&nbsp MU-IoT Timeline Application</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+      aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse container" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Home <span class="sr-only"></span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Log Out</a>
+        </li>
+      </ul>
+      <!-- <ul class="nabar-nav">
                 <li class="nav-item mt-2">
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -38,141 +40,199 @@
                       </div>
                 </li>
               </ul> -->
-            </div>
-        </nav>
+    </div>
+  </nav>
 
-        <div class="container mt-4">
-            <h1>MU-IoT Timeline Application</h1>
-            <h4>Hi, <%= currentUser %>!</h4>
-        </div>
+  <div class="container mt-4">
+    <h1>MU-IoT Timeline Application</h1>
+    <h4>Hi, <%= currentUser %>!</h4>
+  </div>
 
-        <div id="visualization" class="container mt-4"></div>
-        <script type="text/javascript">
-            function parseTrigger(ruleTrigger) {
-              // Simple parsing for POC
-              // In real code it would better to have special parsing algorithm on backend side
-              const startTime = ruleTrigger.split("time is ")[1] + ':00';
-              const endTime = '17:00:00';
-              return [startTime, endTime];
-            }
+  <div id="visualization" class="container mt-4"></div>
+  <script type="text/javascript">
+    function parseTrigger(ruleTrigger) {
+      // Simple parsing for POC
+      // In real code it would better to have special parsing algorithm on backend side
+      const startTime = ruleTrigger.split("time is ")[1] + ':00';
+      const endTime = '17:00:00';
+      return [startTime, endTime];
+    }
 
-            // DOM element where the Timeline will be attached
-            var container = document.getElementById('visualization');
+    // DOM element where the Timeline will be attached
+    var container = document.getElementById('visualization');
 
-            var currentUserRulesRaw = '<%- JSON.stringify(currentUserRules) %>';
-            var currentUserRulesJson = JSON.parse(currentUserRulesRaw);
+    var currentUserRulesRaw = '<%- JSON.stringify(currentUserRules) %>';
+    var currentUserRulesJson = JSON.parse(currentUserRulesRaw);
 
-            var devices = [];
-            for (const [key, value] of Object.entries(currentUserRulesJson)) {
-              if(!devices.includes(value.device)) {
-                devices.push(value.device);
-              }
-            }
-            var groups = new vis.DataSet();
-            devices.forEach((device) => groups.add({id: device, content: device}));
+    var devices = [];
+    for (const [key, value] of Object.entries(currentUserRulesJson)) {
+      if (!devices.includes(value.device)) {
+        devices.push(value.device);
+      }
+    }
+    var groups = new vis.DataSet();
+    devices.forEach((device) => groups.add({ id: device, content: device }));
 
-            var _items = [];
-            for (const [key, value] of Object.entries(currentUserRulesJson)) {
-              let itemContent = '';
-              if (value.hasConflict) {
-                itemContent = document.createElement('div');
-                itemContent.setAttribute('data-bs-toggle', 'modal');
-                itemContent.setAttribute('data-bs-target', `#sr-${value._id}`);
-                itemContent.innerHTML = `${value.action} <i class="bi bi-exclamation-circle-fill"></i>`;
-              } else {
-                itemContent = value.action;
-              }
-              _items.push({ id: value.id, content: itemContent, start: `2014-04-20T${parseTrigger(value.trigger)[0]}`, end: `2014-04-20T${parseTrigger(value.trigger)[1]}`, group: value.device});
-            }
-            var items = new vis.DataSet(_items);
+    var _items = [];
+    for (const [key, value] of Object.entries(currentUserRulesJson)) {
+      let itemContent = '';
+      if (value.hasConflict) {
+        itemContent = document.createElement('div');
+        itemContent.setAttribute('data-bs-toggle', `modal`);
+        itemContent.setAttribute('data-bs-target', `#modal-${value._id}`);
+        itemContent.innerHTML = `${value.action} <i class="bi bi-exclamation-circle-fill"></i>`;
+      } else {
+        itemContent = value.action;
+      }
+      _items.push({ id: value.id, content: itemContent, start: `2014-04-20T${parseTrigger(value.trigger)[0]}`, end: `2014-04-20T${parseTrigger(value.trigger)[1]}`, group: value.device });
+    }
+    var items = new vis.DataSet(_items);
 
-            // Configuration for the Timeline
-            var options = {};
+    // Configuration for the Timeline
+    var options = {};
 
-            // Create a Timeline
-            var timeline = new vis.Timeline(container, items, options);
-            timeline.setGroups(groups);
-        </script>
+    // Create a Timeline
+    var timeline = new vis.Timeline(container, items, options);
+    timeline.setGroups(groups);
+  </script>
 
-        <div class="container mt-4">
+  <div class="accordion container mt-4" id="accordionExample">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseYourRules"
+          aria-expanded="true" aria-controls="collapseYourRules">
+          Your Rules
+        </button>
+      </h2>
+      <div id="collapseYourRules" class="accordion-collapse collapse" aria-labelledby="headingOne">
+        <div class="accordion-body">
+          <div class="container mt-4">
             <h4>Your Rules</h4>
-              <% for(const [key, value] of Object.entries(currentUserRules)){  %>
-                <% if(value.hasConflict){ %>
-                  <div class="card mt-4" style="width: 18rem;">
-                    <div class="card-body bg-warning">
-                        <h5 class="card-title"><i class="bi bi-exclamation-circle-fill"></i> device: <%= value.device %></h5>
-                        <hr>
-                        <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %></h6>
-                        <h6 class="card-subtitle mb-2 text">- action: <%= value.action %></h6>
-                        <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %></h6>
-                        <hr>
-                        <p class="card-text"><%= value.description %>.</p>
-                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#sr-<%= value.id %>">Conflict Info</button>
-                        </div>
+            <% for(const [key, value] of Object.entries(currentUserRules)){ %>
+              <% if(value.hasConflict){ %>
+                <div class="card mt-4" style="width: 18rem;">
+                  <div class="card-body bg-warning">
+                    <h5 class="card-title"><i class="bi bi-exclamation-circle-fill"></i> device: <%= value.device %>
+                    </h5>
+                    <hr>
+                    <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %>
+                    </h6>
+                    <h6 class="card-subtitle mb-2 text">- action: <%= value.action %>
+                    </h6>
+                    <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %>
+                    </h6>
+                    <hr>
+                    <p class="card-text">
+                      <%= value.description %>.
+                    </p>
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                      <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                        data-bs-target="#modal-<%= value.id %>">Conflict Info</button>
                     </div>
                   </div>
+                </div>
 
-                  <!-- Modal -->
-                  <div class="modal fade" id="sr-<%= value.id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Your Rule was suppressed!</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <p><b>Reason: </b>Your rule has lower priority</p>
-                          <p><b>Device: </b><%= value.device %></p>
-                          <hr>
-                          <p><b>Your Rule Category: </b><%= value.category %></p>
-                          <p><b>Your Rule Category Score: </b><%= (conflictingRules.filter((rule) => rule.affectedRuleId === value.id))[0].affectedRuleScore %></p>
-                          <hr>
-                          <p><b>Suppressor Rule Category: </b><%= (conflictingRules.filter((rule) => rule.affectedRuleId === value.id))[0].suppressorRuleCategory %></p>
-                          <p><b>Suppressor Rule Category Score: </b><%= (conflictingRules.filter((rule) => rule.affectedRuleId === value.id))[0].suppressorRuleScore %></p>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
+                <!-- Modal -->
+                <div class="modal fade" id="modal-<%= value.id %>" tabindex="-2" aria-labelledby="exampleModalLabel"
+                  aria-hidden="true" style="z-index:1500;">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Your Rule was suppressed!</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p><b>Reason: </b>Your rule has lower priority</p>
+                        <p><b>Device: </b>
+                          <%= value.device %>
+                        </p>
+                        <hr>
+                        <p><b>Your Rule Category: </b>
+                          <%= value.category %>
+                        </p>
+                        <p><b>Your Rule Category Score: </b>
+                          <%= (conflictingRules.filter((rule)=> rule.affectedRuleId === value.id))[0].affectedRuleScore
+                            %>
+                        </p>
+                        <hr>
+                        <p><b>Suppressor Rule Category: </b>
+                          <%= (conflictingRules.filter((rule)=> rule.affectedRuleId ===
+                            value.id))[0].suppressorRuleCategory %>
+                        </p>
+                        <p><b>Suppressor Rule Category Score: </b>
+                          <%= (conflictingRules.filter((rule)=> rule.affectedRuleId ===
+                            value.id))[0].suppressorRuleScore %>
+                        </p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                       </div>
                     </div>
                   </div>
-                <% } else{ %>  
+                </div>
+                <% } else{ %>
                   <div class="card mt-4" style="width: 18rem;">
                     <div class="card-body bg-info">
-                        <h5 class="card-title">device: <%= value.device %></h5>
-                        <hr>
-                        <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %></h6>
-                        <h6 class="card-subtitle mb-2 text">- action: <%= value.action %></h6>
-                        <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %></h6>
-                        <hr>
-                        <p class="card-text"><%= value.description %></p>
-                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                        </div>
-                    </div>
-                </div>
-               <% } %>
-              <%} %>
-        </div>
-
-        <div class="container mt-4 mb-4">
-          <hr>
-          <h4>Rules of Others</h4>
-            <% for(const [key, value] of Object.entries(rulesOfOtherUsers)){  %>
-                <div class="card mt-4" style="width: 18rem;">
-                  <div class="card-body bg-light">
-                      <h5 class="card-title">device: <%= value.device %></h5>
+                      <h5 class="card-title">device: <%= value.device %>
+                      </h5>
                       <hr>
-                      <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %></h6>
-                      <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %></h6>
+                      <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %>
+                      </h6>
+                      <h6 class="card-subtitle mb-2 text">- action: <%= value.action %>
+                      </h6>
+                      <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %>
+                      </h6>
+                      <hr>
+                      <p class="card-text">
+                        <%= value.description %>
+                      </p>
+                      <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                      </div>
+                    </div>
                   </div>
-              </div>
-            <%} %>
+                  <% } %>
+                    <%} %>
+          </div>
+        </div>
       </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOtherUsersRules"
+          aria-expanded="false" aria-controls="collapseTwo">
+          Rules of other users that have conflicting rule with you
+        </button>
+      </h2>
+      <div id="collapseOtherUsersRules" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+        <div class="accordion-body">
+          <div class="container mt-4 mb-4">
+            <hr>
+            <h4>Rules of Other Users</h4>
+            <% for(const [key, value] of Object.entries(rulesOfOtherUsers)){ %>
+              <div class="card mt-4" style="width: 18rem;">
+                <div class="card-body bg-light">
+                  <h5 class="card-title">device: <%= value.device %>
+                  </h5>
+                  <hr>
+                  <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %>
+                  </h6>
+                  <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %>
+                  </h6>
+                </div>
+              </div>
+              <%} %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
-        <script src="./popper/umd/popper.min.js"></script>
-        <script src="./js/bootstrap.min.js"></script>
-    </body>
+
+
+
+  <script src="./popper/umd/popper.min.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+</body>
 
 </html>
