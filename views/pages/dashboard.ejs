@@ -24,7 +24,7 @@
                   <a class="nav-link" href="/logout">Log Out</a>
                 </li>
               </ul>
-              <ul class="nabar-nav">
+              <!-- <ul class="nabar-nav">
                 <li class="nav-item mt-2">
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -37,7 +37,7 @@
                         </ul>
                       </div>
                 </li>
-              </ul>
+              </ul> -->
             </div>
         </nav>
 
@@ -102,8 +102,9 @@
                     <div class="card-body bg-warning">
                         <h5 class="card-title"><i class="bi bi-exclamation-circle-fill"></i> device: <%= value.device %></h5>
                         <hr>
-                        <h6 class="card-subtitle mb-2 text">trigger: <%= value.trigger %></h6>
-                        <h6 class="card-subtitle mb-2 text">action: <%= value.action %></h6>
+                        <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %></h6>
+                        <h6 class="card-subtitle mb-2 text">- action: <%= value.action %></h6>
+                        <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %></h6>
                         <hr>
                         <p class="card-text"><%= value.description %>.</p>
                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
@@ -141,8 +142,9 @@
                     <div class="card-body bg-info">
                         <h5 class="card-title">device: <%= value.device %></h5>
                         <hr>
-                        <h6 class="card-subtitle mb-2 text">trigger: <%= value.trigger %></h6>
-                        <h6 class="card-subtitle mb-2 text">action: <%= value.action %></h6>
+                        <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %></h6>
+                        <h6 class="card-subtitle mb-2 text">- action: <%= value.action %></h6>
+                        <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %></h6>
                         <hr>
                         <p class="card-text"><%= value.description %></p>
                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
@@ -152,6 +154,21 @@
                <% } %>
               <%} %>
         </div>
+
+        <div class="container mt-4 mb-4">
+          <hr>
+          <h4>Rules of Others</h4>
+            <% for(const [key, value] of Object.entries(rulesOfOtherUsers)){  %>
+                <div class="card mt-4" style="width: 18rem;">
+                  <div class="card-body bg-light">
+                      <h5 class="card-title">device: <%= value.device %></h5>
+                      <hr>
+                      <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %></h6>
+                      <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %></h6>
+                  </div>
+              </div>
+            <%} %>
+      </div>
 
 
         <script src="./popper/umd/popper.min.js"></script>

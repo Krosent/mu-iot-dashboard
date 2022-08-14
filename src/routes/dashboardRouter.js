@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const { getRulesByName } = require('../models/rule');
+const { getRulesByName, getRulesOfOtherUsers } = require('../models/rule');
 const { getSuppressedRulesByAffectedUser } = require('../models/suppressedRuleLog');
 
 const {
@@ -14,11 +14,13 @@ router.get('/', async (req, res) => {
   // Fetch current user rules from state store
   const rules = await getRulesByName(req.session.user);
 
+  const rulesOfOtherUsers = await getRulesOfOtherUsers(req.session.user);
+
   const conflictingRules = await getSuppressedRulesByAffectedUser(req.session.user);
 
   console.log(`Dashboard Rules: ${rules}`);
 
-  dashboardView(res, rules, conflictingRules, req.session.user);
+  dashboardView(res, rules, conflictingRules, rulesOfOtherUsers, req.session.user);
 });
 
 module.exports = router;

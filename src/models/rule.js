@@ -40,6 +40,10 @@ function getRulesByName(user) {
   return Rule.find({ username: user });
 }
 
+function getRulesOfOtherUsers(user) {
+  return Rule.find({ username: { $ne: user } });
+}
+
 function getAllRules() {
   const filter = {};
   return Rule.find(filter);
@@ -73,6 +77,7 @@ function unsetRuleHasConflict(id) {
 module.exports = {
   Rule,
   getRulesByName,
+  getRulesOfOtherUsers,
   getAllRules,
   getGroupedConflictingRules,
   setRuleHasConflict,
