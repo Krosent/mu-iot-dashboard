@@ -14,3 +14,6 @@
 
 # UI View
 ![login page](https://github.com/Krosent/mu-iot-dashboard/blob/master/.github/images/Screenshot%20from%202022-08-15%2013-00-05.png)
+![dashboard page your rules open](https://github.com/Krosent/mu-iot-dashboard/blob/master/.github/images/Screenshot%20from%202022-08-15%2013-00-50.png)
+![dashboard page other users rules open](https://github.com/Krosent/mu-iot-dashboard/blob/master/.github/images/Screenshot%20from%202022-08-15%2013-00-55.png)
+![suppression rule message](https://github.com/Krosent/mu-iot-dashboard/blob/master/.github/images/Screenshot%20from%202022-08-15%2013-00-59.png)
