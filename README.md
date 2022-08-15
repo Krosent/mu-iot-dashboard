@@ -11,7 +11,7 @@
 * Give a system 30 seconds to download first automation rules and after that you can go into dashboard through `localhost:8888`
 
 # Architecture
-![login page](https://github.com/Krosent/mu-iot-dashboard/blob/master/.github/images/MU-IOT-App-Architecture.png)
+![login page](https://github.com/Krosent/mu-iot-dashboard/blob/master/.github/images/MU-IoT-app-architecture.png)
 
 # UI View
 ![login page](https://github.com/Krosent/mu-iot-dashboard/blob/master/.github/images/Screenshot%20from%202022-08-15%2013-00-05.png)
