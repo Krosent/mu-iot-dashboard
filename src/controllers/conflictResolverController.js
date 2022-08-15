@@ -4,13 +4,15 @@
 // const mongoose = require('mongoose');
 const { getGroupedConflictingRules, setRuleHasConflict, unsetRuleHasConflict } = require('../models/rule');
 const { getPrioritySelectionByName } = require('../models/prioritySelection');
-const { saveSuppressionLogs } = require('../models/suppressedRuleLog');
+const { saveSuppressionLogs, removeSuppressionRecord } = require('../models/suppressedRuleLog');
 
 async function suppressRulesWithLowerScore(ruleSuppressor, rulesToSuppress) {
   // For POC we consider only rule suppression mechanism handling between two rules only
 
   // Suppressor rule which state we set to false
   unsetRuleHasConflict(ruleSuppressor.ruleId);
+  // Remove rule from suppression log (if has record)
+  removeSuppressionRecord(ruleSuppressor.ruleId);
 
   // Other rules must be suppressed
   rulesToSuppress.forEach(async (r) => {
@@ -54,12 +56,9 @@ async function executeConflictResolution() {
     }
     // Update Rule in the Data Store
     // (ruleSuppressor, rulesToSuppress)
+    // Suppress rule with lower rule priority
     suppressRulesWithLowerScore(maxScoreRule, rulesToSuppress);
   });
-  // Determine users
-  // Determine rule priority
-  // Compare user's preferences
-  // Suppress rule with lower rule priority
 }
 
 module.exports = {

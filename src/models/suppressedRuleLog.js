@@ -84,8 +84,17 @@ function saveSuppressionLogs(suppressedRule, suppressorRule) {
   return SuppressedRuleLog.findOneAndUpdate(query, update, options).catch((err) => console.log(`error is here: ${err}`));
 }
 
+function removeSuppressionRecord(affectedRuleId) {
+  SuppressedRuleLog.findOneAndDelete({ affectedRuleId }, (err) => {
+    if (err) {
+      console.log(`Cannot remove record from log: ${affectedRuleId}`);
+    }
+  });
+}
+
 module.exports = {
   SuppressedRuleLog,
   getSuppressedRulesByAffectedUser,
   saveSuppressionLogs,
+  removeSuppressionRecord,
 };
