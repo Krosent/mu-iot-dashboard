@@ -9,3 +9,8 @@
 * In the root folder of the project you need to execute command `npm install`
 * You are ready to run our application, you need to execute following NPM command: `npm start`
 * Give a system 30 seconds to download first automation rules and after that you can go into dashboard through `localhost:8888`
+
+# Architecture
+
+# UI View
+![login page](https://github.com/Krosent/mu-iot-dashboard/blob/master/.github/images/Screenshot%20from%202022-08-15%2013-00-05.png)
