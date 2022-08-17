@@ -7,8 +7,6 @@ const { getPrioritySelectionByName } = require('../models/prioritySelection');
 const { saveSuppressionLogs, removeSuppressionRecord } = require('../models/suppressedRuleLog');
 
 async function suppressRulesWithLowerScore(ruleSuppressor, rulesToSuppress) {
-  // For POC we consider only rule suppression mechanism handling between two rules only
-
   // Suppressor rule which state we set to false
   unsetRuleHasConflict(ruleSuppressor.ruleId);
   // Remove rule from suppression log (if has record)
