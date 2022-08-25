@@ -14,7 +14,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 
-const conflictResolutionJob = require('./jobs/conflictResolutionJob');
+const stateValidatorJob = require('./jobs/stateValidatorJob');
 
 app.set('view engine', 'ejs');
 
@@ -51,7 +51,7 @@ mongoose.connect(
 ).then(() => console.log('Connected to MongoDB!')).catch((error) => console.log(`MongoDB Connection Failed, reason: ${error}`));
 
 // event loop to analyse rules every 5 minutes
-conflictResolutionJob.initConflictResolutionJob();
+stateValidatorJob.executeStateValidatorJob();
 
 // entry point routes
 const entryPointRouter = require('./routes/entryRouter');
