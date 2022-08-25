@@ -32,6 +32,15 @@ const RuleSchema = new mongoose.Schema({
     required: false,
     default: false,
   },
+  hasAdminSuppressed: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  adminSuppressionReason: {
+    type: String,
+    required: false,
+  },
 });
 
 const Rule = mongoose.model('Rule', RuleSchema);

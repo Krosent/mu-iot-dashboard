@@ -26,20 +26,6 @@
           <a class="nav-link" href="/logout">Log Out</a>
         </li>
       </ul>
-      <!-- <ul class="nabar-nav">
-                <li class="nav-item mt-2">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          Notifications: 0
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-lg-right">
-                          <li><a class="dropdown-item" href="#">Action</a></li>
-                          <li><a class="dropdown-item" href="#">Another action</a></li>
-                          <li><a class="dropdown-item" href="#">Something else</a></li>
-                        </ul>
-                      </div>
-                </li>
-              </ul> -->
     </div>
   </nav>
 
@@ -77,10 +63,17 @@
     for (const [key, value] of Object.entries(currentUserRulesJson)) {
       let itemContent = '';
       if (value.hasConflict) {
-        itemContent = document.createElement('div');
-        itemContent.setAttribute('data-bs-toggle', `modal`);
-        itemContent.setAttribute('data-bs-target', `#modal-${value._id}`);
-        itemContent.innerHTML = `${value.action} <i class="bi bi-exclamation-circle-fill"></i>`;
+        if (value.hasAdminSuppressed) {
+          itemContent = document.createElement('div');
+          itemContent.setAttribute('data-bs-toggle', `modal`);
+          itemContent.setAttribute('data-bs-target', `#modal-${value._id}`);
+          itemContent.innerHTML = `${value.action} <i class="bi bi-person-circle text-danger"></i>`;
+        } else {
+          itemContent = document.createElement('div');
+          itemContent.setAttribute('data-bs-toggle', `modal`);
+          itemContent.setAttribute('data-bs-target', `#modal-${value._id}`);
+          itemContent.innerHTML = `${value.action} <i class="bi bi-exclamation-circle-fill text-danger"></i>`;
+        }
       } else {
         itemContent = value.action;
       }
@@ -111,94 +104,136 @@
               <% if(value.hasConflict){ %>
                 <div class="card mt-4" style="width: 18rem;">
                   <div class="card-body bg-warning">
-                    <h5 class="card-title"><i class="bi bi-exclamation-circle-fill"></i> device: <%= value.device %>
-                    </h5>
-                    <hr>
-                    <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %>
-                    </h6>
-                    <h6 class="card-subtitle mb-2 text">- action: <%= value.action %>
-                    </h6>
-                    <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %>
-                    </h6>
-                    <hr>
-                    <p class="card-text">
-                      <%= value.description %>.
-                    </p>
-                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                      <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                        data-bs-target="#modal-<%= value.id %>">Conflict Info</button>
-                    </div>
+                    <% if(value.hasAdminSuppressed){ %>
+                      <h5 class="card-title"><i class="bi bi-person-circle"></i> device: <%= value.device %>
+                      </h5>
+                      <% } else{ %>
+                        <h5 class="card-title"><i class="bi bi-exclamation-circle-fill"></i> device: <%= value.device %>
+                        </h5>
+                        <% } %>
+                          <hr>
+                          <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %>
+                          </h6>
+                          <h6 class="card-subtitle mb-2 text">- action: <%= value.action %>
+                          </h6>
+                          <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %>
+                          </h6>
+                          <hr>
+                          <p class="card-text">
+                            <%= value.description %>.
+                          </p>
+                          <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                              data-bs-target="#modal-<%= value.id %>">Conflict Info</button>
+                          </div>
                   </div>
                 </div>
 
-                <!-- Modal -->
-                <div class="modal fade" id="modal-<%= value.id %>" tabindex="-2" aria-labelledby="exampleModalLabel"
-                  aria-hidden="true" style="z-index:1500;">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Your Rule was suppressed!</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <p><b>Reason: </b>Your rule has lower priority</p>
-                        <p><b>Device: </b>
-                          <%= value.device %>
-                        </p>
-                        <hr>
-                        <p><b>Your Rule Category: </b>
-                          <%= value.category %>
-                        </p>
-                        <p><b>Your Rule Category Score: </b>
-                          <%= (conflictingRules.filter((rule)=> rule.affectedRuleId === value.id))[0].affectedRuleScore
-                            %>
-                        </p>
-                        <hr>
-                        <p><b>Suppressor Rule Category: </b>
-                          <%= (conflictingRules.filter((rule)=> rule.affectedRuleId ===
-                            value.id))[0].suppressorRuleCategory %>
-                        </p>
-                        <p><b>Suppressor Rule Category Score: </b>
-                          <%= (conflictingRules.filter((rule)=> rule.affectedRuleId ===
-                            value.id))[0].suppressorRuleScore %>
-                        </p>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <% if(value.hasAdminSuppressed){ %>
+                  <!-- Modal Admin Suppression -->
+                  <div class="modal fade" id="modal-<%= value.id %>" tabindex="-2" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true" style="z-index:1500;">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Admin Suppression | Rule was suppressed!</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <p><b>Reason: </b>
+                            <%= value.adminSuppressionReason %>
+                          </p>
+                          <p><b>Device: </b>
+                            <%= value.device %>
+                          </p>
+                          <hr>
+                          <p><b>Your Rule Category: </b>
+                            <%= value.category %>
+                          </p>
+                          <p><b>Your Rule Category Score: </b>
+                            <%= (conflictingRules.filter((rule)=> rule.affectedRuleId ===
+                              value.id))[0].affectedRuleScore
+                              %>
+                          </p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <% } else{ %>
-                  <div class="card mt-4" style="width: 18rem;">
-                    <div class="card-body bg-info">
-                      <h5 class="card-title">device: <%= value.device %>
-                      </h5>
-                      <hr>
-                      <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %>
-                      </h6>
-                      <h6 class="card-subtitle mb-2 text">- action: <%= value.action %>
-                      </h6>
-                      <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %>
-                      </h6>
-                      <hr>
-                      <p class="card-text">
-                        <%= value.description %>
-                      </p>
-                      <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                  <% } else{ %>
+                    <!-- Modal System Suppression -->
+                    <div class="modal fade" id="modal-<%= value.id %>" tabindex="-2" aria-labelledby="exampleModalLabel"
+                      aria-hidden="true" style="z-index:1500;">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">System Suppression | Rule was suppressed!
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p><b>Reason: </b>Your rule has lower priority</p>
+                            <p><b>Device: </b>
+                              <%= value.device %>
+                            </p>
+                            <hr>
+                            <p><b>Your Rule Category: </b>
+                              <%= value.category %>
+                            </p>
+                            <p><b>Your Rule Category Score: </b>
+                              <%= (conflictingRules.filter((rule)=> rule.affectedRuleId ===
+                                value.id))[0].affectedRuleScore
+                                %>
+                            </p>
+                            <hr>
+                            <p><b>Suppressor Rule Category: </b>
+                              <%= (conflictingRules.filter((rule)=> rule.affectedRuleId ===
+                                value.id))[0].suppressorRuleCategory %>
+                            </p>
+                            <p><b>Suppressor Rule Category Score: </b>
+                              <%= (conflictingRules.filter((rule)=> rule.affectedRuleId ===
+                                value.id))[0].suppressorRuleScore %>
+                            </p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <% } %>
-                    <%} %>
+                    <% } %>
+                      <% } else{ %>
+                        <div class="card mt-4" style="width: 18rem;">
+                          <div class="card-body bg-info">
+                            <h5 class="card-title">device: <%= value.device %>
+                            </h5>
+                            <hr>
+                            <h6 class="card-subtitle mb-2 text">- trigger: <%= value.trigger %>
+                            </h6>
+                            <h6 class="card-subtitle mb-2 text">- action: <%= value.action %>
+                            </h6>
+                            <h6 class="card-subtitle mb-2 text">- rule category: <%= value.category %>
+                            </h6>
+                            <hr>
+                            <p class="card-text">
+                              <%= value.description %>
+                            </p>
+                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            </div>
+                          </div>
+                        </div>
+                        <% } %>
+                          <%} %>
           </div>
         </div>
       </div>
     </div>
     <div class="accordion-item mb-4">
       <h2 class="accordion-header" id="headingTwo">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOtherUsersRules"
-          aria-expanded="false" aria-controls="collapseTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseOtherUsersRules" aria-expanded="false" aria-controls="collapseTwo">
           Rules of other users with conflicting rules
         </button>
       </h2>

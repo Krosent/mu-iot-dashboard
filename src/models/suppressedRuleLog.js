@@ -45,6 +45,16 @@ const SuppressedRuleLogSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  hasAdminSuppressed: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  adminSuppressionReason: {
+    type: String,
+    required: false,
+    default: '',
+  },
 });
 
 const SuppressedRuleLog = mongoose.model('SuppressedRuleLog', SuppressedRuleLogSchema);
