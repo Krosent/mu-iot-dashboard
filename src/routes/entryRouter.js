@@ -1,12 +1,16 @@
-/* eslint-disable max-len */
+/*
+Author: Artyom Kuznetsov
+This project is a part of Thesis Work on topic:
+- TOWARDS INTELLIGIBILITY IN MULTI-USER IOT ENVIRONMENTS
+
+Promotor: prof. dr. Beat Signer
+Supervisor: Ekene Attoh
+*/
+
 const express = require('express');
 
 const router = express.Router();
-
 const session = require('express-session');
-
-const solidNodeClient = require('solid-node-client');
-
 const flash = require('connect-flash');
 
 router.use(session({ secret: 'session secret key 007', cookie: { maxAge: 60000 } }));
@@ -14,49 +18,12 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 router.use(flash());
 
-function sendLoginError(req, res, error) {
-  console.log(`Login Error: ${error}`);
-  req.flash('loginError', 'Incorrect  Credentials');
-  res.redirect('/');
-}
+const { getEntryPage, login, logout } = require('../controllers/entryController');
 
-router.get('/', (req, res) => {
-  if (req.session.user) {
-    res.redirect('/dashboard');
-  } else {
-    res.render('pages/entry', { loginError: req.flash('loginError') });
-  }
-});
+router.get('/', (req, res) => getEntryPage(req, res));
 
-router.post('/login', async (req, res) => {
-  const client = new solidNodeClient.SolidNodeClient();
+router.post('/login', async (req, res) => login(req, res));
 
-  await client.login({
-    idp: 'https://solidcommunity.net',
-    username: req.body.username,
-    password: req.body.password,
-  }).catch((error) => {
-    sendLoginError(req, res, error);
-  });
-
-  client
-    .getSession()
-    .then((_session) => {
-      console.log(_session);
-      if (_session.isLoggedIn) {
-        req.session.user = req.body.username;
-        req.session.password = req.body.password; // not safe way to store user credentials in session, only for POC
-        res.redirect('/');
-      } else {
-        sendLoginError(req, res, 'Session Login not Authorized');
-      }
-    })
-    .catch((error) => res.status(405).send(`Unauthorized, error: ${error}`));
-});
-
-router.get('/logout', async (req, res) => {
-  req.session.user = '';
-  res.redirect('/');
-});
+router.get('/logout', async (req, res) => logout(req, res));
 
 module.exports = router;

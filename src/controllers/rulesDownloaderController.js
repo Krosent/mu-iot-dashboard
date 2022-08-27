@@ -1,3 +1,12 @@
+/*
+Author: Artyom Kuznetsov
+This project is a part of Thesis Work on topic:
+- TOWARDS INTELLIGIBILITY IN MULTI-USER IOT ENVIRONMENTS
+
+Promotor: prof. dr. Beat Signer
+Supervisor: Ekene Attoh
+*/
+
 /* eslint-disable no-console */
 const solidNodeClient = require('solid-node-client');
 const SolidFileClient = require('solid-file-client');

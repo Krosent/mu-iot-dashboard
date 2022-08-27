@@ -1,3 +1,12 @@
+/*
+Author: Artyom Kuznetsov
+This project is a part of Thesis Work on topic:
+- TOWARDS INTELLIGIBILITY IN MULTI-USER IOT ENVIRONMENTS
+
+Promotor: prof. dr. Beat Signer
+Supervisor: Ekene Attoh
+*/
+
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
 const CronJob = require('node-cron');

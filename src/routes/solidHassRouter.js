@@ -1,3 +1,12 @@
+/*
+Author: Artyom Kuznetsov
+This project is a part of Thesis Work on topic:
+- TOWARDS INTELLIGIBILITY IN MULTI-USER IOT ENVIRONMENTS
+
+Promotor: prof. dr. Beat Signer
+Supervisor: Ekene Attoh
+*/
+
 const express = require('express');
 const fs = require('fs');
 const solidNodeClient = require('solid-node-client');
@@ -5,6 +14,11 @@ const SolidFileClient = require('solid-file-client');
 
 const router = express.Router();
 
+// This router was used during the experementation of integration SOLID into HomeAssistant.
+// We were able to integrate login authorisation via CLI method
+// However keep in mind HASS does not support custom authorisation methods
+// Therefore if you want to have HASS with Solid integrated you would need
+// to create custom version of HASS and maintain it yourself
 router.get('/authorize/:username/:password', async (req, res) => {
   const client = new solidNodeClient.SolidNodeClient();
   const fileClient = new SolidFileClient(client);
